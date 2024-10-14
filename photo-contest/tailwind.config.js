@@ -40,7 +40,10 @@ module.exports = {
         'primary': "#BDBDBD"
       },
       fontFamily: {
-        inter: ['Inter', 'sans-serif']
+        inter: ['Inter', 'sans-serif'],
+        quicksand: ['Quicksand', 'sans-serif'],
+        quattrocento: ['"Quattrocento Sans"', 'sans-serif'],
+
       },
       boxShadow: {
         'default': '0px 1px 4px 0px rgba(0, 0, 0, 0.25)',

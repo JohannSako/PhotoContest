@@ -26,3 +26,14 @@
   font-weight: 500;
   font-size: 16px;
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400&family=Quattrocento+Sans:ital,wght@0,400;1,400&display=swap');
+
+.font-quicksand {
+    font-family: 'Quicksand', sans-serif;
+}
+
+.font-quattrocento-sans {
+    font-family: 'Quattrocento Sans', sans-serif;
+    font-style: italic;
+}
