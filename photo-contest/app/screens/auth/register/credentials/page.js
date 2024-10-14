@@ -1,0 +1,1 @@
+export default function AuthRegisterCredentials() { return <div></div> }

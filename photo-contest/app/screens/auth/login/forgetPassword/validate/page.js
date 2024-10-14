@@ -1,0 +1,1 @@
+export default function AuthLoginValidate() { return <div></div> }
