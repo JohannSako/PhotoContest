@@ -23,6 +23,7 @@ import Upload from "@/components/photo/upload";
 import PopUp from "@/components/popUp";
 import SegmentedControl from "@/components/segmentedControl";
 import ThemeAnnouncement from "@/components/theme";
+import TimePicker from "@/components/time/timePicker";
 
 const photos = [
   { photo: "https://i.pinimg.com/736x/2e/38/43/2e38438c65ca396f092734971db1ff2d.jpg", user: { name: "Author 1" } },
@@ -114,6 +115,9 @@ export default function SplashScreen() {
         />
       </div>
       <SegmentedControl firstText="Search" secondText="Search" index={controlIndex} setIndex={setControlIndex} />
+      <div className="bg-white flex w-[400px] h-[400px] my-[200px] items-center justify-center">
+        <TimePicker cancelPicker={handleClick} savePicker={savePicker} time={time} />
+      </div>
     </div>
   );
 }
