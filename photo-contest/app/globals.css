@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.non-phone-screen-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+  background-color: #f8f9fa;
+  color: #212529;
+  padding: 20px;
+  font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+  .non-phone-screen-message {
+    display: none;
+  }
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap');
+
+.input-placeholder::placeholder {
+  font-weight: 500;
+  font-size: 16px;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400&family=Quattrocento+Sans:ital,wght@0,400;1,400&display=swap');
+
+.font-quicksand {
+    font-family: 'Quicksand', sans-serif;
+}
+
+.font-quattrocento-sans {
+    font-family: 'Quattrocento Sans', sans-serif;
+    font-style: italic;
+}

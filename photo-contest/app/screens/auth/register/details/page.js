@@ -1,0 +1,1 @@
+export default function AuthRegisterDetails() { return <div></div> }

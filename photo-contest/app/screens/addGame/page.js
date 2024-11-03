@@ -1,0 +1,1 @@
+export default function AddGame() { return <div></div> }
