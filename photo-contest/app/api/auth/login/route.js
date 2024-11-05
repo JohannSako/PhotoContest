@@ -51,7 +51,7 @@ export async function POST(request) {
       });
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
     return new Response(JSON.stringify({ message: 'Login successful', token }), {
       status: 200,
