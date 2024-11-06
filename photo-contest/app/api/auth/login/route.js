@@ -1,18 +1,19 @@
 import clientPromise from '@/lib/mongodb';
-import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+import { SignJWT } from 'jose';
 
 function isLoginRequestBody(body) {
   return (
     typeof body.mail === 'string' &&
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.mail) &&
-    typeof body.password === 'string'
+    typeof body.password === 'string' &&
+    body.password.length >= 6
   );
 }
 
 export async function POST(request) {
   try {
     const body = await request.json();
-    const bcrypt = require('bcrypt');
 
     if (!isLoginRequestBody(body)) {
       return new Response(JSON.stringify({ error: 'Invalid input data' }), {
@@ -51,7 +52,10 @@ export async function POST(request) {
       });
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    const token = await new SignJWT({ userId: user._id })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setExpirationTime('7d')
+      .sign(new TextEncoder().encode(process.env.JWT_SECRET));
 
     return new Response(JSON.stringify({ message: 'Login successful', token }), {
       status: 200,
