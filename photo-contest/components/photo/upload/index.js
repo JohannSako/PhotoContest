@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import '@fontsource/inter';
 
-export default function Upload() {
+export default function Upload({width = 'w-[288px]', height = 'h-[494px]', border = 'rounded-none', borderColor = 'border-black', onImageChange}) {
   const fileInputRef = useRef(null);
   const [selectedImage, setSelectedImage] = useState(null);
 
@@ -15,6 +15,7 @@ export default function Upload() {
       const reader = new FileReader();
       reader.onloadend = () => {
         setSelectedImage(reader.result);
+        onImageChange(reader.result);
       };
       reader.readAsDataURL(file);
     }
@@ -30,11 +31,11 @@ export default function Upload() {
         accept="image/*"
       />
       <div
-        className="flex w-72 h-[494px] bg-[#ECE2E2] border-black border-solid border-4 active:opacity-50 items-center justify-center cursor-pointer"
+        className={`flex ${width} ${height} bg-[#ECE2E2] ${borderColor} border-solid border-4 ${border} active:opacity-50 items-center justify-center cursor-pointer`}
         onClick={uploadImage}
       >
         {selectedImage ? (
-          <img src={selectedImage} alt="Selected" className="w-full h-full object-cover" />
+          <img src={selectedImage} alt="Selected" className={`w-full h-full object-cover ${border}`} />
         ) : (
           <svg xmlns="http://www.w3.org/2000/svg" width="76" height="72" viewBox="0 0 76 72" fill="none">
             <path
