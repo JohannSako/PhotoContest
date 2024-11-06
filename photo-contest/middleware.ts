@@ -1,21 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
+import { jwtVerify } from 'jose';
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const token = request.cookies.get('token')?.value;
 
+  console.log('Token in middleware:', token);
+
   if (!token) {
-    return NextResponse.redirect(new URL('/login', request.url));
+    return NextResponse.redirect(new URL('/auth/login', request.url));
   }
 
   try {
-    jwt.verify(token, process.env.JWT_SECRET);
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+    await jwtVerify(token, secret);
     return NextResponse.next();
   } catch (error) {
-    return NextResponse.redirect(new URL('/login', request.url));
+    console.log(error);
+    return NextResponse.redirect(new URL('/auth/login', request.url));
   }
 }
 
 export const config = {
-  matcher: ['/home/:path*'],
+  matcher: ['/home/:path*', '/game/:path*', '/addGame/:path*', '/componentsExample/:path*', '/settings/:path*'],
 };
