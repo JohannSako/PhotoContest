@@ -7,6 +7,7 @@ function isRegisterRequestBody(body) {
     typeof body.name === 'string' &&
     body.name.length >= 4 &&
     typeof body.password === 'string' &&
+    body.password.length >= 6 &&
     typeof body.mail === 'string' &&
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.mail) &&
     typeof body.profilePicture === 'string'
@@ -18,6 +19,7 @@ export async function POST(request) {
     const body = await request.json();
     const bcrypt = require('bcrypt');
 
+    console.log(body);
     if (!isRegisterRequestBody(body)) {
       return new Response(JSON.stringify({ error: 'Invalid input data' }), {
         status: 400,
