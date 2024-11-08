@@ -1,16 +1,15 @@
 "use client";
 
-import IconSlogan from "@/components/icon/slogan"
-import TextInput from "@/components/input/text"
-import Button from "@/components/input/button"
-import Header from "@/components/header"
-import { useState } from "react"
-import { useRouter } from "next/navigation";
+import IconSlogan from "@/components/icon/slogan";
+import TextInput from "@/components/input/text";
+import Button from "@/components/input/button";
+import Header from "@/components/header";
+import { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Text from "@/components/text";
-import { useSearchParams } from "next/navigation";
 
-export default function AuthLoginVerify() {
+function AuthLoginVerify() {
     const searchParams = useSearchParams();
 
     const emailSet = searchParams.get('email');
@@ -95,4 +94,12 @@ export default function AuthLoginVerify() {
             <Button text="Verify" type="secondary" width="343px" onClick={verify} />
         </div>
     )
+}
+
+export default function AuthLoginVerifyWrapper() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <AuthLoginVerify />
+        </Suspense>
+    );
 }

@@ -6,12 +6,12 @@ import TextInput from "@/components/input/text";
 import Text from "@/components/text";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Header from "@/components/header";
 import Upload from "@/components/photo/upload";
 
-export default function AuthRegisterDetails() {
+function AuthRegisterDetails() {
     const [username, setUsername] = useState('');
     const [profilePicture, setProfilePicture] = useState('');
     const router = useRouter();
@@ -69,4 +69,12 @@ export default function AuthRegisterDetails() {
             <Button text="Sign Up" type="secondary" width="343px" onClick={handleRegister} />
         </div>
     )
+}
+
+export default function AuthRegisterDetailsWrapper() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <AuthRegisterDetails />
+        </Suspense>
+    );
 }
