@@ -13,7 +13,7 @@ export default function SplashScreen({ finishLoading }) {
       targets: "#logo",
       delay: 0,
       scale: 1.2,
-      duration: 3000,
+      duration: 4000,
       easing: "easeInOutExpo",
     });
   }, []);
