@@ -1,4 +1,3 @@
-// pages/index.js
 "use client";
 
 import { useState, useEffect } from "react";
@@ -12,12 +11,14 @@ export default function HomePage() {
   const finishLoading = () => {
     setLoading(false);
     router.push('/home');
-  }
+  };
 
   useEffect(() => {
+    router.prefetch('/home');
+
     const timer = setTimeout(() => {
       finishLoading();
-    }, 3000); // minimum time for splash screen (3 seconds)
+    }, 4000);
 
     return () => clearTimeout(timer);
   }, []);

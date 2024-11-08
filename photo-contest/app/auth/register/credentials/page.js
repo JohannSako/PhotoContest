@@ -43,7 +43,7 @@ export default function AuthRegisterCredentials() {
             <Button text="Continue" type="secondary" width="343px" onClick={handleRegister} />
             <div className="flex flex-row pt-[146px] gap-[5px]">
                 <Text weight="500" color="white">Already have an account ?</Text>
-                <Link href="/componentsExample">
+                <Link href="/auth/login">
                     <Text weight="700" color="white">Log In</Text>
                 </Link>
             </div>
