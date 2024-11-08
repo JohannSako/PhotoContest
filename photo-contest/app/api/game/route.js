@@ -1,8 +1,8 @@
 import clientPromise from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
-import jwt from 'jsonwebtoken';
 import { getRandomTheme, contactParticipants } from '../contest/route';
 import { user } from '@nextui-org/react';
+import { jwtVerify } from 'jose';
 
 function isGameRequestBody(body) {
   return (
@@ -73,7 +73,8 @@ export async function POST(request) {
     const token = authHeader.split(' ')[1];
     let decoded;
     try {
-      decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+      decoded = await jwtVerify(token, secret);
     } catch (err) {
       console.error('JWT verification error:', err);
       return new Response(JSON.stringify({ error: 'Invalid token' }), {
@@ -84,7 +85,7 @@ export async function POST(request) {
       });
     }
 
-    const userId = decoded.userId;
+    const userId = decoded.payload.userId;
 
     const client = await clientPromise;
     const db = client.db('admin');
@@ -132,7 +133,7 @@ export async function POST(request) {
 export async function GET(request) {
   try {
     const authHeader = request.headers.get('authorization');
-    if (!authHeader) {
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401,
         headers: {
@@ -142,9 +143,21 @@ export async function GET(request) {
     }
 
     const token = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+    let decoded;
+    try {
+      decoded = await jwtVerify(token, secret);
+    } catch (err) {
+      console.error('JWT verification error:', err);
+      return new Response(JSON.stringify({ error: 'Invalid token' }), {
+        status: 401,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    }
 
-    const userId = decoded.userId;
+    const userId = decoded.payload.userId;
 
     const client = await clientPromise;
     const db = client.db('admin');
