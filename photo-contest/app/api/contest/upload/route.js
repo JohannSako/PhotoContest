@@ -1,6 +1,7 @@
 import clientPromise from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import jwt from 'jsonwebtoken';
+import { jwtVerify } from 'jose';
 
 async function authenticateToken(request) {
   const authHeader = request.headers.get('authorization');
@@ -11,12 +12,13 @@ async function authenticateToken(request) {
   const token = authHeader.split(' ')[1];
   let decoded;
   try {
-    decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+    decoded = await jwtVerify(token, secret);
   } catch (err) {
     throw new Error('Invalid token');
   }
 
-  return decoded.userId;
+  return decoded.payload.userId;
 }
 
 export async function POST(request) {
@@ -62,6 +64,11 @@ export async function POST(request) {
     };
 
     await photoCollection.insertOne(newPhoto);
+
+    await contestCollection.updateOne(
+      { _id: new ObjectId(contestId) },
+      { $push: { photos: newPhoto._id } }
+    );
 
     return new Response(JSON.stringify({ message: 'Photo uploaded successfully', photo: newPhoto }), {
       status: 201,
