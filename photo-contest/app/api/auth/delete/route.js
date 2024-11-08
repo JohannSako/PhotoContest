@@ -1,16 +1,16 @@
 import clientPromise from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 
 function isDeleteUserRequestBody(body) {
   return (
-    typeof body.mail === 'string' &&
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.mail)
+    typeof body.id === 'string'
   );
 }
 
 export async function DELETE(request) {
   try {
     const body = await request.json();
-    const { mail } = body;
+    const { id } = body;
 
     if (!isDeleteUserRequestBody(body)) {
       return new Response(JSON.stringify({ error: 'Invalid input data' }), {
@@ -25,7 +25,7 @@ export async function DELETE(request) {
     const db = client.db('admin');
     const userCollection = db.collection('userdata');
 
-    const result = await userCollection.deleteOne({ mail });
+    const result = await userCollection.deleteOne({ _id: new ObjectId(id) });
 
     if (result.deletedCount === 0) {
       return new Response(JSON.stringify({ error: 'User not found' }), {
