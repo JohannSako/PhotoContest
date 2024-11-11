@@ -49,6 +49,22 @@ module.exports = {
         'default': '0px 1px 4px 0px rgba(0, 0, 0, 0.25)',
         'inset': '0px 1px 4px 0px rgba(0, 0, 0, 0.25) inset',
       },
+      keyframes: {
+        biggerBounce: {
+          '0%, 100%': {
+            'transform': 'translateY(-200%)',
+            'animation-timing-function': 'cubic-bezier(0.8, 0, 1, 1)'
+          },
+          '50%': {
+            'transform': 'translateY(0)',
+            'animation-timing-function': 'cubic-bezier(0, 0, 0.2, 1)'
+          }
+        }
+      },
+      animation: {
+        'spin-slow': 'spin 2s linear infinite',
+        'big-bounce': 'biggerBounce 3s infinite'
+      }
     },
   },
   plugins: [],
