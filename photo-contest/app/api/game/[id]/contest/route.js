@@ -12,6 +12,7 @@ export async function GET(request, { params }) {
         const themeCollection = db.collection('theme');
         const photoCollection = db.collection('photo');
         const userCollection = db.collection('userdata');
+        const categoryCollection = db.collection('category');
 
         const game = await gameCollection.findOne({ _id: new ObjectId(id) });
         if (!game) {
@@ -60,7 +61,15 @@ export async function GET(request, { params }) {
             return { ...photo, user };
         });
 
-        return new Response(JSON.stringify({ game, contest, theme, photos: photosWithUserDetails }), {
+        const category = await categoryCollection.findOne({ _id: new ObjectId(contest.category) });
+        if (!category) {
+            return new Response(JSON.stringify({ error: 'Category not found' }), {
+                status: 404,
+                headers: { 'Content-Type': 'application/json' },
+            });
+        }
+
+        return new Response(JSON.stringify({ game, contest, theme, photos: photosWithUserDetails, category }), {
             status: 200,
             headers: { 'Content-Type': 'application/json' },
         });

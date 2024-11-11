@@ -5,6 +5,8 @@ import { Suspense, useState, useEffect } from 'react';
 import GameUploading from './steps/uploading';
 import GameVoting from './steps/voting';
 import GameBreak from './steps/break';
+import Loader from '@/components/loader';
+import GameTheme from './steps/theme';
 
 function Game() {
     const searchParams = useSearchParams();
@@ -37,18 +39,18 @@ function Game() {
         }
     }, [_id]);
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <Loader />;
     if (error) return <div>Error: {error}</div>;
 
-    const { game, contest, theme, photos } = data;
+    const { game, contest, theme, photos, category } = data;
 
     switch (contest.state) {
         case 'UPLOADING':
-            return <GameVoting contest={contest} gamemaster={game.gamemaster} theme={theme} photos={photos} />
+            return <GameUploading contest={contest} gamemaster={game.gamemaster} gameId={game._id} theme={theme} category={category} />
         case 'VOTING':
-            return <GameVoting contest={contest} gamemaster={game.gamemaster} theme={theme} photos={photos} />
+            return <GameVoting gamemaster={game.gamemaster} gameId={game._id} theme={theme} photos={photos} />
         case 'BREAK':
-            return <GameBreak contest={contest} gamemaster={game.gamemaster} theme={theme} />
+            return <GameBreak gamemaster={game.gamemaster} gameId={game._id} theme={theme} photos={photos} />
         default:
             alert('the state is invalid: ' + contest.state);
             router.back();
@@ -57,7 +59,7 @@ function Game() {
 
 export default function GameWrapper() {
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<Loader />}>
             <Game />
         </Suspense>
     );
