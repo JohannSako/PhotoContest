@@ -21,5 +21,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/home/:path*', '/game/:path*', '/addGame/:path*', '/componentsExample/:path*', '/settings/:path*'],
+  matcher: ['/home/:path*', '/game/:path*', '/addGame/:path*', '/settings/:path*'],
 };
