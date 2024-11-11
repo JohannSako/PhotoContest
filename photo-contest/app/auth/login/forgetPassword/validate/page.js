@@ -8,12 +8,14 @@ import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Text from "@/components/text";
+import Loader from "@/components/loader";
 
 function AuthLoginValidate() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const router = useRouter();
     const searchParams = useSearchParams();
+    const [loading, setLoading] = useState(false);
 
     const email = searchParams.get('email');
 
@@ -32,6 +34,7 @@ function AuthLoginValidate() {
         }
 
         try {
+            setLoading(true);
             const response = await fetch('/api/auth/forgetPassword/change', {
                 method: 'PUT',
                 headers: {
@@ -49,6 +52,8 @@ function AuthLoginValidate() {
         } catch (error) {
             alert(error);
             console.error('Error resetting password:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -58,6 +63,7 @@ function AuthLoginValidate() {
 
     return (
         <div className="flex w-full h-[100vh] bg-primary items-center flex-col p-12">
+            {loading && <Loader />}
             <Header title="" left="Back" leftFunction={handleBack} buttonColor="white" />
             <div className="flex pt-10">
                 <IconSlogan />
@@ -73,7 +79,7 @@ function AuthLoginValidate() {
 
 export default function AuthLoginValidateWrapper() {
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<Loader />}>
             <AuthLoginValidate />
         </Suspense>
     );
