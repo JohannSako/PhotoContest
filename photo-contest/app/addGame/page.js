@@ -7,15 +7,18 @@ import { useState } from "react";
 import CreateGame from "./create";
 import JoinGame from "./join";
 import Cookies from "js-cookie";
+import Loader from "@/components/loader";
 
 export default function AddGame() {
     const router = useRouter();
     const [index, setIndex] = useState(0);
     const [categories, setCategories] = useState([]);
     const [title, setTitle] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleCreate = async () => {
         try {
+            setLoading(true);
             const response = await fetch('/api/game', {
                 method: 'POST',
                 headers: {
@@ -36,11 +39,14 @@ export default function AddGame() {
         } catch (error) {
             console.error('Error creating game:', error.message);
             alert('Error creating game');
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <div className="flex items-center flex-col p-4">
+            {loading && <Loader />}
             <Header
                 title="Add Game"
                 left="Back"

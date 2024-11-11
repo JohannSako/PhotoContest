@@ -6,10 +6,12 @@ import Button from "@/components/input/button"
 import Header from "@/components/header"
 import { useState } from "react"
 import { useRouter } from "next/navigation";
+import Loader from "@/components/loader";
 
 export default function AuthLoginSendCode() {
     const [email, setEmail] = useState('')
     const router = useRouter();
+    const [loading, setLoading] = useState(false);
 
     const handleEmail = (e) => {
         setEmail(e.target.value)
@@ -17,6 +19,7 @@ export default function AuthLoginSendCode() {
 
     const sendCode = async () => {
         try {
+            setLoading(true);
             const response = await fetch('/api/auth/forgetPassword', {
                 method: 'POST',
                 headers: {
@@ -37,6 +40,8 @@ export default function AuthLoginSendCode() {
         } catch (error) {
             alert('An unexpected error occurred');
             console.error('Error sending code:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -46,6 +51,7 @@ export default function AuthLoginSendCode() {
 
     return (
         <div className="flex w-full h-[100vh] bg-primary items-center flex-col p-12">
+            {loading && <Loader />}
             <Header title="" left="Back" leftFunction={handleBack} buttonColor="white" />
             <div className="flex pt-10">
                 <IconSlogan />

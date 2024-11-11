@@ -7,10 +7,12 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import PopUp from "@/components/popUp";
 import { jwtDecode } from "jwt-decode";
+import Loader from "@/components/loader";
 
 export default function Settings() {
     const router = useRouter();
     const [deletePopUp, setDeletePopUp] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const handleLogout = () => {
         Cookies.remove('token');
@@ -26,6 +28,7 @@ export default function Settings() {
         }
 
         try {
+            setLoading(true);
             const response = await fetch('/api/auth/delete', {
                 method: 'DELETE',
                 headers: {
@@ -46,12 +49,14 @@ export default function Settings() {
         } catch (error) {
             alert('Error deleting account');
             console.error('Error:', error);
+        } finally {
+            setLoading(false);
         }
-
     }
 
     return (
         <div className="flex gap-[251px] items-center flex-col p-4">
+            {loading && <Loader />}
             <Header
                 title="Settings"
                 left="Back"

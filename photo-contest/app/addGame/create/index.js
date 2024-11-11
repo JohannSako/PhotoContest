@@ -1,15 +1,18 @@
 import { useEffect, useState } from 'react';
 import Category from "@/components/category";
 import TextInput from '@/components/input/text';
+import Loader from '@/components/loader';
 
 export default function CreateGame({ title, setTitle, setActiveCategories }) {
     const [categories, setCategories] = useState([]);
     const [filteredCategories, setFilteredCategories] = useState([]);
     const [stateCategories, setStateCategories] = useState({});
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchCategories = async () => {
             try {
+                setLoading(true);
                 const response = await fetch('/api/category');
                 const data = await response.json();
                 if (response.ok) {
@@ -27,6 +30,8 @@ export default function CreateGame({ title, setTitle, setActiveCategories }) {
             } catch (err) {
                 alert('Error fetching categories');
                 console.log(err);
+            } finally {
+                setLoading(true);
             }
         };
 
@@ -51,6 +56,7 @@ export default function CreateGame({ title, setTitle, setActiveCategories }) {
 
     return (
         <div className="pt-[21px]">
+            {loading && <Loader />}
             <TextInput placeholder="Enter Title" value={title} onChange={handleTitle} />
             <div className="grid grid-cols-2 gap-[29px] pt-[21px]">
                 {filteredCategories.map((category) => (

@@ -10,10 +10,12 @@ import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Header from "@/components/header";
 import Upload from "@/components/photo/upload";
+import Loader from "@/components/loader";
 
 function AuthRegisterDetails() {
     const [username, setUsername] = useState('');
     const [profilePicture, setProfilePicture] = useState('');
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
 
     const searchParams = useSearchParams();
@@ -35,6 +37,7 @@ function AuthRegisterDetails() {
 
     const handleRegister = async () => {
         try {
+            setLoading(true);
             const response = await fetch('/api/auth/register', {
                 method: 'POST',
                 headers: {
@@ -53,11 +56,14 @@ function AuthRegisterDetails() {
         } catch (error) {
             alert('Error during register. Please try again.');
             console.error('Error during register:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <div className="flex w-full h-[100vh] bg-primary items-center flex-col p-12">
+            {loading && <Loader />}
             <Header title="" left="Back" leftFunction={handleBack} buttonColor="white" />
             <div className="flex pt-10">
                 <IconSlogan />

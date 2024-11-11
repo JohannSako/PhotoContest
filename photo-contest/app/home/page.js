@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import PopUp from "@/components/popUp";
 import { jwtDecode } from "jwt-decode";
+import Loader from "@/components/loader";
 
 const leavePopUpInfo = {
     title: "Leaving your game",
@@ -27,10 +28,12 @@ export default function Home() {
     const [games, setGames] = useState([]);
     const [binPopUp, setBinPopUp] = useState(false);
     const [isGameMaster, setIsGameMaster] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [gameId, setGameId] = useState('');
 
     const getGames = async () => {
         try {
+            setLoading(true);
             const response = await fetch('/api/game', {
                 headers: {
                     'Content-Type': 'application/json',
@@ -46,6 +49,8 @@ export default function Home() {
         } catch (err) {
             alert('Error fetching games');
             console.log(err);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -96,6 +101,7 @@ export default function Home() {
 
     const deleteGame = async () => {
         try {
+            setLoading(true);
             const response = await fetch(`/api/game/delete/${gameId}`, {
                 method: 'DELETE',
                 headers: {
@@ -116,11 +122,14 @@ export default function Home() {
         } catch (error) {
             alert('Error deleting game');
             console.log(error);
+        } finally {
+            setLoading(false);
         }
     }
 
     return (
         <div className="flex gap-8 items-center flex-col p-4">
+            {loading && <Loader />}
             <Header
                 title="Home"
                 left="Settings"

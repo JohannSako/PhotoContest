@@ -8,6 +8,7 @@ import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Text from "@/components/text";
+import Loader from "@/components/loader";
 
 function AuthLoginVerify() {
     const searchParams = useSearchParams();
@@ -17,6 +18,7 @@ function AuthLoginVerify() {
     const [email, setEmail] = useState(emailSet);
     const [code, setCode] = useState('');
     const router = useRouter();
+    const [loading, setLoading] = useState(false);
 
     const handleEmail = (e) => {
         setEmail(e.target.value)
@@ -28,6 +30,7 @@ function AuthLoginVerify() {
 
     const verify = async () => {
         try {
+            setLoading(true);
             const response = await fetch('/api/auth/forgetPassword/code', {
                 method: 'POST',
                 headers: {
@@ -44,11 +47,14 @@ function AuthLoginVerify() {
         } catch (error) {
             alert(error)
             console.error('Error verifying code:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
     const resendCode = async () => {
         try {
+            setLoading(true);
             const response = await fetch('/api/auth/forgetPassword', {
                 method: 'POST',
                 headers: {
@@ -69,6 +75,8 @@ function AuthLoginVerify() {
         } catch (error) {
             alert('An unexpected error occurred');
             console.error('Error sending code:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -78,6 +86,7 @@ function AuthLoginVerify() {
 
     return (
         <div className="flex w-full h-[100vh] bg-primary items-center flex-col p-12">
+            {loading && <Loader />}
             <Header title="" left="Back" leftFunction={handleBack} buttonColor="white" />
             <div className="flex pt-10">
                 <IconSlogan />

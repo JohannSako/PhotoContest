@@ -8,11 +8,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Cookies from "js-cookie";
+import Loader from "@/components/loader";
 
 export default function AuthLogin() {
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter();
+    const [loading, setLoading] = useState(false);
 
     const handleLoginChange = (e) => {
         setLogin(e.target.value);
@@ -24,6 +26,7 @@ export default function AuthLogin() {
 
     const handleLogin = async () => {
         try {
+            setLoading(true);
             const response = await fetch('/api/auth/login', {
                 method: 'POST',
                 headers: {
@@ -43,11 +46,14 @@ export default function AuthLogin() {
         } catch (error) {
             alert('Error logging in. Please try again.');
             console.error('Error logging in:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <div className="flex w-full h-[100vh] bg-primary items-center flex-col p-12">
+            {loading && <Loader />}
             <div className="flex pt-10">
                 <IconSlogan />
             </div>
