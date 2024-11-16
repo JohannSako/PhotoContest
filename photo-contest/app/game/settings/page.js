@@ -3,7 +3,7 @@
 import Header from "@/components/header";
 import TextInput from "@/components/input/text";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Loader from "@/components/loader";
 import Button from "@/components/input/button";
 
