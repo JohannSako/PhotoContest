@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import Loader from "@/components/loader";
 import Button from "@/components/input/button";
 
-export default function GameSettingsContestTime() {
+function GameSettingsContestTime() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [data, setData] = useState(null);
@@ -71,4 +71,12 @@ export default function GameSettingsContestTime() {
             </div>
         </div>
     )
+}
+
+export default function GameSettingsContestTimeWrapper() {
+    return (
+        <Suspense fallback={<Loader />}>
+            <GameSettingsContestTime />
+        </Suspense>
+    );
 }

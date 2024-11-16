@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import Loader from "@/components/loader";
 import Button from "@/components/input/button";
 
-export default function GameSettings() {
+function GameSettings() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [data, setData] = useState(null);
@@ -96,4 +96,12 @@ export default function GameSettings() {
             />
         </div>
     )
+}
+
+export default function GameSettingsWrapper() {
+    return (
+        <Suspense fallback={<Loader />}>
+            <GameSettings />
+        </Suspense>
+    );
 }

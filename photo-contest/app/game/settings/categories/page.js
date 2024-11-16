@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import Loader from "@/components/loader";
 import Button from "@/components/input/button";
 
-export default function GameSettingsCategories() {
+function GameSettingsCategories() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [data, setData] = useState(null);
@@ -71,4 +71,12 @@ export default function GameSettingsCategories() {
             </div>
         </div>
     )
+}
+
+export default function GameSettingsCategoriesWrapper() {
+    return (
+        <Suspense fallback={<Loader />}>
+            <GameSettingsCategories />
+        </Suspense>
+    );
 }
