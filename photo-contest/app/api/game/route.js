@@ -88,7 +88,7 @@ export async function POST(request) {
     const userId = decoded.payload.userId;
 
     const client = await clientPromise;
-    const db = client.db('admin');
+    const db = client.db('main');
     const gameCollection = db.collection('game');
     const code = generateCode();
 
@@ -160,7 +160,7 @@ export async function GET(request) {
     const userId = decoded.payload.userId;
 
     const client = await clientPromise;
-    const db = client.db('admin');
+    const db = client.db('main');
     const gameCollection = db.collection('game');
 
     const games = await gameCollection.find({

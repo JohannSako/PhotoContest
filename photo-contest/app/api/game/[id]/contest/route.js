@@ -6,7 +6,7 @@ export async function GET(request, { params }) {
         const { id } = params;
 
         const client = await clientPromise;
-        const db = client.db('admin');
+        const db = client.db('main');
         const gameCollection = db.collection('game');
         const contestCollection = db.collection('contest');
         const themeCollection = db.collection('theme');
@@ -38,6 +38,21 @@ export async function GET(request, { params }) {
             });
         }
 
+        const category = await categoryCollection.findOne({ _id: new ObjectId(contest.category) });
+        if (!category) {
+            return new Response(JSON.stringify({ error: 'Category not found' }), {
+                status: 404,
+                headers: { 'Content-Type': 'application/json' },
+            });
+        }
+
+        if (contest.state == "UPLOADING") {
+            return new Response(JSON.stringify({ game, contest, theme, photos: null, category }), {
+                status: 200,
+                headers: { 'Content-Type': 'application/json' },
+            });
+        }
+
         const photos = await photoCollection.find({ _id: { $in: contest.photos } }).toArray();
         if (!photos) {
             return new Response(JSON.stringify({ error: 'Photos not found' }), {
@@ -60,14 +75,6 @@ export async function GET(request, { params }) {
             const user = users.find(user => user._id.equals(photo.user_id));
             return { ...photo, user };
         });
-
-        const category = await categoryCollection.findOne({ _id: new ObjectId(contest.category) });
-        if (!category) {
-            return new Response(JSON.stringify({ error: 'Category not found' }), {
-                status: 404,
-                headers: { 'Content-Type': 'application/json' },
-            });
-        }
 
         return new Response(JSON.stringify({ game, contest, theme, photos: photosWithUserDetails, category }), {
             status: 200,

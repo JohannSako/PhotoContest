@@ -32,7 +32,7 @@ export async function POST(request) {
     const { name, password, mail, profilePicture } = body;
 
     const client = await clientPromise;
-    const db = client.db('admin');
+    const db = client.db('main');
     const userCollection = db.collection('userdata');
 
     // Check if the username or email already exists

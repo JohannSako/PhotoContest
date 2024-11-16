@@ -32,7 +32,7 @@ export async function getRandomTheme(categories, history, db) {
     }
 
     // Select a random theme from the category
-    const themeId = getRandomElement(category.themes.map(t => t.$id));
+    const themeId = getRandomElement(category.themes.map(t => t));
     const theme = await db.collection('theme').findOne({ _id: new ObjectId(themeId) });
 
     if (!theme) {
@@ -45,7 +45,7 @@ export async function getRandomTheme(categories, history, db) {
 export async function contactParticipants(userIds, { title, content }) {
     try {
         const client = await clientPromise;
-        const db = client.db('admin');
+        const db = client.db('main');
         const userCollection = db.collection('userdata');
 
         const users = await userCollection.find({ _id: { $in: userIds.map(id => new ObjectId(id)) } }).toArray();
@@ -96,7 +96,7 @@ export async function POST(request) {
         }
 
         const client = await clientPromise;
-        const db = client.db('admin');
+        const db = client.db('main');
 
         const { theme, categoryId } = await getRandomTheme(body.categories, body.history, db);
 

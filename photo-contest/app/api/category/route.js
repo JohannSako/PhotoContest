@@ -4,7 +4,7 @@ import { ObjectId } from 'mongodb';
 export async function GET() {
   try {
     const client = await clientPromise;
-    const db = client.db('admin');
+    const db = client.db('main');
     const collection = db.collection('category');
 
     const categories = await collection.find({}).toArray();

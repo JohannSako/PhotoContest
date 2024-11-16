@@ -15,7 +15,7 @@ export async function GET(request, { params }) {
     console.log("A");
     const client = await clientPromise;
     console.log("B");
-    const db = client.db('admin');
+    const db = client.db('main');
     console.log("C");
     const photoCollection = db.collection('photo');
     console.log("D");

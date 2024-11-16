@@ -11,16 +11,16 @@ const nextConfig = {
         ],
     },
     webpack: (config) => {
-        config.resolve = {
-            ...config.resolve,
-            fallback: {
-                "fs": false,
-                "path": false,
-                "os": false,
-                "net": false,
-                "tls": false
-            }
-        }
+        // config.resolve = {
+        //     ...config.resolve,
+        //     fallback: {
+        //         "fs": false,
+        //         "path": false,
+        //         "os": false,
+        //         "net": false,
+        //         "tls": false
+        //     }
+        // }
         return config;
     }
 };

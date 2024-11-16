@@ -1,1 +1,0 @@
-export default function AuthLoginVerify() { return <div></div> }

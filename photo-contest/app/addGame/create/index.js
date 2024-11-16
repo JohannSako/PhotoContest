@@ -31,7 +31,7 @@ export default function CreateGame({ title, setTitle, setActiveCategories }) {
                 alert('Error fetching categories');
                 console.log(err);
             } finally {
-                setLoading(true);
+                setLoading(false);
             }
         };
 

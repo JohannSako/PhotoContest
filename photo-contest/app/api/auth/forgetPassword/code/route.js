@@ -24,7 +24,7 @@ export async function POST(request) {
     }
 
     const client = await clientPromise;
-    const db = client.db('admin');
+    const db = client.db('main');
     const codeCollection = db.collection('code');
 
     const resetCodeEntry = await codeCollection.findOne({ mail, code });

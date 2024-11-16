@@ -5,7 +5,7 @@ import { getRandomTheme } from './contest/route';
 
 async function updateContestState() {
   const client = await clientPromise;
-  const db = client.db('admin');
+  const db = client.db('main');
   const gameCollection = db.collection('game');
   const contestCollection = db.collection('contest');
 
@@ -65,7 +65,7 @@ async function updateContestState() {
 
 async function allParticipantsVoted(game) {
   const client = await clientPromise;
-  const db = client.db('admin');
+  const db = client.db('main');
   const contestCollection = db.collection('contest');
 
   const contest = await contestCollection.findOne({ _id: new ObjectId(game.contest) });

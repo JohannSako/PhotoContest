@@ -29,7 +29,7 @@ export async function POST(request) {
 
     console.log("before promise");
     const client = await clientPromise;
-    const db = client.db('admin');
+    const db = client.db('main');
     const userCollection = db.collection('userdata');
 
     const user = await userCollection.findOne({ mail });

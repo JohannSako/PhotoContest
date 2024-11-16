@@ -73,7 +73,7 @@ export default function Home() {
     );
 
     const enterGame = (_id) => {
-        router.push(`/game?_id=${_id}`)
+        router.push(`/game?_id=${_id}`);
     }
 
     const openPopUp = (gamemaster, id) => {

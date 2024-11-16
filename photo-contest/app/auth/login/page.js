@@ -57,16 +57,14 @@ export default function AuthLogin() {
             <div className="flex pt-10">
                 <IconSlogan />
             </div>
-            <div className="flex flex-col gap-4 items-center pt-[72px]">
-                <TextInput value={login} onChange={handleLoginChange} placeholder="Email" />
-                <TextInput value={password} onChange={handlePasswordChange} show={true} placeholder="Password" type="password" />
-            </div>
-            <div className="flex w-full justify-end pb-[26px]">
-                <Link className="text-end pt-[9px]" href="/auth/login/forgetPassword/sendCode">
+            <div className="flex flex-col gap-4 items-end pt-[72px] pb-[15px]">
+                <TextInput value={login} onChange={handleLoginChange} placeholder="Enter your email address" />
+                <TextInput value={password} onChange={handlePasswordChange} show={true} placeholder="Enter your password" type="password" />
+                <Link className="text-end" href="/auth/login/forgetPassword/sendCode">
                     <Text size="12px" weight="600" color="white">Forgot your password?</Text>
                 </Link>
             </div>
-            <Button text="Log in" type="secondary" width="343px" onClick={handleLogin} />
+            <Button text="Log in" type="secondary" width="343px" height="40px" onClick={handleLogin} />
             <div className="flex flex-row pt-[146px] gap-[5px]">
                 <Text weight="500" color="white">Don’t have an account ?</Text>
                 <Link href="/auth/register/credentials">

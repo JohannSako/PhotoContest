@@ -25,7 +25,7 @@ export async function PUT(request) {
     }
 
     const client = await clientPromise;
-    const db = client.db('admin');
+    const db = client.db('main');
     const userCollection = db.collection('userdata');
 
     const hashedPassword = await bcrypt.hash(password, 10);

@@ -1,1 +1,0 @@
-export default function GameVoting() { return <div></div> }

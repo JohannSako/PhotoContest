@@ -22,7 +22,7 @@ export async function DELETE(request) {
     }
 
     const client = await clientPromise;
-    const db = client.db('admin');
+    const db = client.db('main');
     const userCollection = db.collection('userdata');
 
     const result = await userCollection.deleteOne({ _id: new ObjectId(id) });

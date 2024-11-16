@@ -36,7 +36,7 @@ export async function POST(request) {
     }
 
     const client = await clientPromise;
-    const db = client.db('admin');
+    const db = client.db('main');
     const contestCollection = db.collection('contest');
     const photoCollection = db.collection('photo');
 

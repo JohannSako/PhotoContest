@@ -36,11 +36,11 @@ export default function AuthRegisterCredentials() {
             <div className="flex pt-10">
                 <IconSlogan />
             </div>
-            <div className="flex flex-col gap-4 items-center pt-[72px] pb-[54px]">
-                <TextInput value={email} onChange={handleEmailChange} placeholder="Email" />
-                <TextInput value={password} onChange={handlePasswordChange} show={true} placeholder="Password" type="password" />
+            <div className="flex flex-col gap-4 items-center pt-[72px] pb-[49px]">
+                <TextInput value={email} onChange={handleEmailChange} placeholder="Enter a valid email address" />
+                <TextInput value={password} onChange={handlePasswordChange} show={true} placeholder="Create a strong password" type="password" />
             </div>
-            <Button text="Continue" type="secondary" width="343px" onClick={handleRegister} />
+            <Button text="Continue" type="secondary" width="343px" height="40px" onClick={handleRegister} />
             <div className="flex flex-row pt-[146px] gap-[5px]">
                 <Text weight="500" color="white">Already have an account ?</Text>
                 <Link href="/auth/login">

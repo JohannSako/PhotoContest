@@ -44,7 +44,7 @@ export async function POST(request, { params }) {
         const userId = decoded.payload.userId;
 
         const client = await clientPromise;
-        const db = client.db('admin');
+        const db = client.db('main');
         const gameCollection = db.collection('game');
         const userObjectId = new ObjectId(userId);
 

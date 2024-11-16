@@ -34,7 +34,7 @@ export async function DELETE(request, { params }) {
         const userIdObject = new ObjectId(userId);
 
         const client = await clientPromise;
-        const db = client.db('admin');
+        const db = client.db('main');
         const gameCollection = db.collection('game');
 
         const game = await gameCollection.findOne({ _id: new ObjectId(id) });
