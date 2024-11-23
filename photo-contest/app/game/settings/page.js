@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect, Suspense } from "react";
 import Loader from "@/components/loader";
 import Button from "@/components/input/button";
+import Cookies from "js-cookie";
 
 function GameSettings() {
     const router = useRouter();
@@ -46,8 +47,26 @@ function GameSettings() {
 
     const { game } = data;
 
-    const handleApply = () => {
-
+    const handleApply = async () => {
+        try {
+            const response = await fetch(`/api/game/settings/${_id}/title`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${Cookies.get('token')}`,
+                },
+                body: JSON.stringify({ title: title }),
+            });
+            const result = await response.json();
+            if (response.ok) {
+                alert('Title updated successfully');
+            } else {
+                alert(result.error || 'Failed to update title');
+            }
+        } catch (err) {
+            alert('Error updating title');
+            console.error(err);
+        }
     }
 
     const handleTitleChange = (e) => {
