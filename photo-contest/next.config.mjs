@@ -8,19 +8,15 @@ const nextConfig = {
                 port: '',
                 pathname: '/**',
             },
+            {
+                protocol: 'https',
+                hostname: '**.cloudinary.com',
+                port: '',
+                pathname: '/**',
+            },
         ],
     },
     webpack: (config) => {
-        // config.resolve = {
-        //     ...config.resolve,
-        //     fallback: {
-        //         "fs": false,
-        //         "path": false,
-        //         "os": false,
-        //         "net": false,
-        //         "tls": false
-        //     }
-        // }
         return config;
     }
 };

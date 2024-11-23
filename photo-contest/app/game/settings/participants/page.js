@@ -1,34 +1,40 @@
 "use client";
 
 import Header from "@/components/header";
-import TextInput from "@/components/input/text";
+import SearchInput from "@/components/input/search";
+import SearchResult from "@/components/content/searchResult";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect, Suspense } from "react";
 import Loader from "@/components/loader";
-import Button from "@/components/input/button";
+import Cookies from "js-cookie";
+import PopUp from "@/components/popUp";
 
 function GameSettingsParticipants() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const [data, setData] = useState(null);
+    const [participants, setParticipants] = useState(null);
+    const [gamemaster, setGamemaster] = useState(null);
     const [title, setTitle] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [participantsToRemove, setParticipantsToRemove] = useState([]);
+    const [filteredParticipants, setFilteredParticipants] = useState(null);
 
     const _id = searchParams.get('_id');
 
     useEffect(() => {
-        async function fetchGame() {
+        async function fetchParticipants() {
             try {
-                const response = await fetch(`/api/game/${_id}`);
+                const response = await fetch(`/api/game/settings/${_id}/participants`);
                 const result = await response.json();
 
                 if (!response.ok) {
-                    throw new Error(result.error || 'Failed to fetch data');
+                    throw new Error(result.error || 'Failed to fetch participants');
                 }
 
-                setData(result);
-                setTitle(result.game.title)
+                setParticipants(result.users);
+                setFilteredParticipants(result.users);
+                setGamemaster(result.gamemaster);
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -37,22 +43,55 @@ function GameSettingsParticipants() {
         }
 
         if (_id) {
-            fetchGame();
+            fetchParticipants();
         }
     }, [_id]);
 
+    const handleSearch = (e) => {
+        const query = e.target.value.toLowerCase();
+        if (participants && participants.length != 0) {
+            setFilteredParticipants(participants.filter(participant =>
+                participant.name.toLowerCase().includes(query)
+            ));
+        }
+        setTitle(e.target.value);
+    };
+
+    const toggleParticipantRemoval = (participantId) => {
+        setParticipantsToRemove((prevState) => {
+            return [...prevState, participantId];
+        });
+        setParticipants(participants.filter(participant =>
+            participant._id == participantId ? null : participant
+        ))
+        setFilteredParticipants(participants);
+    };
+
+    const handleApply = async () => {
+        try {
+            const response = await fetch(`/api/game/settings/${_id}/participants`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${Cookies.get('token')}`,
+                },
+                body: JSON.stringify({ participants: participantsToRemove }),
+            });
+            const result = await response.json();
+            if (response.ok) {
+                alert('Participants removed successfully');
+                router.back();
+            } else {
+                alert(result.error || 'Failed to remove participants');
+            }
+        } catch (err) {
+            alert('Error removing participants');
+            console.error(err);
+        }
+    };
+
     if (loading) return <Loader />;
     if (error) return <div>Error: {error}</div>;
-
-    const { game } = data;
-
-    const handleApply = () => {
-
-    }
-
-    const handleTitleChange = (e) => {
-        setTitle(e.target.value);
-    }
 
     return (
         <div className="flex h-[100vh] items-center flex-col p-4 justify-between">
@@ -64,13 +103,37 @@ function GameSettingsParticipants() {
                     right="Apply"
                     rightFunction={handleApply}
                 />
-                <TextInput
-                    value="Search participants"
-                    onChange={handleTitleChange}
+                <SearchInput
+                    value={title}
+                    onChange={handleSearch}
+                    placeholder="Search participants"
                 />
+                <div className="grid gap-[16px] pt-[21px]">
+                    {filteredParticipants.map((participant) => {
+                        if (participant._id == gamemaster) {
+                            return (
+                                <SearchResult
+                                    key={participant._id}
+                                    result={participant.name + " (Me)"}
+                                    handleResult={() => toggleParticipantRemoval(participant._id)}
+                                    profilePicture={participant.profilePicture}
+                                />
+                            );
+                        }
+                        return (
+                            <SearchResult
+                                key={participant._id}
+                                result={participant.name}
+                                handleResult={() => toggleParticipantRemoval(participant._id)}
+                                bin={() => toggleParticipantRemoval(participant._id)}
+                                profilePicture={participant.profilePicture}
+                            />
+                        );
+                    })}
+                </div>
             </div>
         </div>
-    )
+    );
 }
 
 export default function GameSettingsParticipantsWrapper() {

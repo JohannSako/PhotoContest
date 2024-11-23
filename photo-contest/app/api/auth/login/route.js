@@ -15,7 +15,6 @@ export async function POST(request) {
   try {
     const body = await request.json();
 
-    console.log("before input data");
     if (!isLoginRequestBody(body)) {
       return new Response(JSON.stringify({ error: 'Invalid input data' }), {
         status: 400,
@@ -27,14 +26,12 @@ export async function POST(request) {
 
     const { mail, password } = body;
 
-    console.log("before promise");
     const client = await clientPromise;
     const db = client.db('main');
     const userCollection = db.collection('userdata');
 
     const user = await userCollection.findOne({ mail });
 
-    console.log("before finding user");
     if (!user) {
       return new Response(JSON.stringify({ error: 'User not found' }), {
         status: 404,
@@ -47,7 +44,6 @@ export async function POST(request) {
 
     const isValidPassword = await bcrypt.compare(password, user.password);
 
-    console.log("before valid password");
     if (!isValidPassword) {
       return new Response(JSON.stringify({ error: 'Invalid credentials' }), {
         status: 401,
@@ -57,13 +53,11 @@ export async function POST(request) {
       });
     }
 
-    console.log("token");
     const token = await new SignJWT({ userId: user._id })
       .setProtectedHeader({ alg: 'HS256' })
       .setExpirationTime('7d')
       .sign(new TextEncoder().encode(process.env.JWT_SECRET));
 
-    console.log("before return");
     return new Response(JSON.stringify({ message: 'Login successful', token }), {
       status: 200,
       headers: {
