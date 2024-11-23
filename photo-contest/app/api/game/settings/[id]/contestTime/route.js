@@ -8,7 +8,7 @@ export async function PUT(request, { params }) {
     const { id } = params;
     const body = await request.json();
 
-    if (!body.start || !body.end || typeof body.whenPlayersVoted !== 'boolean') {
+    if (!body.startUpload || !body.endUpload || !body.endVote || typeof body.whenPlayersVoted !== 'boolean') {
       return new Response(JSON.stringify({ error: 'Invalid input data' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
@@ -48,6 +48,19 @@ export async function PUT(request, { params }) {
       });
     }
 
+    if (body.startUpload >= body.endUpload) {
+      return new Response(JSON.stringify({ error: "Ending upload can't happen before the start" }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+    else if (body.endUpload >= body.endVote) {
+      return new Response(JSON.stringify({ error: "Ending vote can't happen before the upload's end" }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     if (game.gamemaster.toString() !== userId) {
       return new Response(JSON.stringify({ error: 'Forbidden' }), {
         status: 403,
@@ -57,7 +70,7 @@ export async function PUT(request, { params }) {
 
     await gameCollection.updateOne(
       { _id: new ObjectId(id) },
-      { $set: { start: body.start, end: body.end, whenPlayersVoted: body.whenPlayersVoted } }
+      { $set: { startUpload: body.startUpload, endUpload: body.endUpload, endVote: body.endVote, whenPlayersVoted: body.whenPlayersVoted } }
     );
 
     return new Response(JSON.stringify({ message: 'Contest time updated successfully' }), {
