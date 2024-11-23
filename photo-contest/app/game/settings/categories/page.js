@@ -74,6 +74,7 @@ function GameSettingsCategories() {
 
     const handleApply = async () => {
         try {
+            setLoading(true);
             const response = await fetch(`/api/game/settings/${_id}/categories`, {
                 method: 'PUT',
                 headers: {
@@ -92,6 +93,8 @@ function GameSettingsCategories() {
         } catch (err) {
             alert('Error updating categories');
             console.error(err);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -105,11 +108,11 @@ function GameSettingsCategories() {
         });
     };
 
-    if (loading) return <Loader />;
     if (error) return <div>Error: {error}</div>;
 
     return (
         <div className="flex h-[100vh] items-center flex-col p-4 justify-between">
+            {loading && <Loader />}
             <div className="flex items-center flex-col p-4 gap-[21px]">
                 <Header
                     title="Game Settings"

@@ -56,11 +56,11 @@ function GameSettingsContestTime() {
         }
     }, [_id]);
 
-    if (loading) return <Loader />;
     if (error) return <div>Error: {error}</div>;
 
     const handleApply = async () => {
         try {
+            setLoading(true);
             const response = await fetch(`/api/game/settings/${_id}/contestTime`, {
                 method: 'PUT',
                 headers: {
@@ -84,6 +84,8 @@ function GameSettingsContestTime() {
         } catch (err) {
             alert('Error updating contest times');
             console.error(err);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -119,6 +121,7 @@ function GameSettingsContestTime() {
 
     return (
         <div className="flex h-[100vh] items-center flex-col p-4 justify-between">
+            {loading && <Loader />}
             <div className="flex items-center flex-col p-4 gap-[58px]">
                 <Header
                     title="Game Settings"

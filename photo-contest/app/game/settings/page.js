@@ -7,6 +7,7 @@ import { useState, useEffect, Suspense } from "react";
 import Loader from "@/components/loader";
 import Button from "@/components/input/button";
 import Cookies from "js-cookie";
+import PopUp from "@/components/popUp";
 
 function GameSettings() {
     const router = useRouter();
@@ -15,6 +16,7 @@ function GameSettings() {
     const [title, setTitle] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [deletePopUp, setDeletePopUp] = useState(false);
 
     const _id = searchParams.get('_id');
 
@@ -42,13 +44,11 @@ function GameSettings() {
         }
     }, [_id]);
 
-    if (loading) return <Loader />;
     if (error) return <div>Error: {error}</div>;
-
-    const { game } = data;
 
     const handleApply = async () => {
         try {
+            setLoading(true);
             const response = await fetch(`/api/game/settings/${_id}/title`, {
                 method: 'PUT',
                 headers: {
@@ -66,6 +66,8 @@ function GameSettings() {
         } catch (err) {
             alert('Error updating title');
             console.error(err);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -73,8 +75,34 @@ function GameSettings() {
         setTitle(e.target.value);
     }
 
+    const deleteGame = async () => {
+        try {
+            setLoading(true);
+            const response = await fetch(`/api/game/delete/${_id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${Cookies.get('token')}`
+                }
+            });
+            const data = await response.json();
+            if (response.ok) {
+                alert('Game has been successfully deleted !');
+                router.push('/home');
+            } else {
+                alert(data.error);
+            }
+        } catch (error) {
+            alert('Error deleting game');
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
     return (
         <div className="flex h-[100vh] items-center flex-col p-4 justify-between">
+            {loading && <Loader />}
             <div className="flex items-center flex-col p-4 gap-[21px]">
                 <Header
                     title="Game Settings"
@@ -112,7 +140,19 @@ function GameSettings() {
                 text="Delete Game"
                 type="delete"
                 width="343px"
+                onClick={() => setDeletePopUp(true)}
             />
+            {deletePopUp && <div className="absolute top-1/2 -translate-y-1/2">
+                <PopUp
+                    title="Deleting your game"
+                    content="Are you sure you want to delete this game? This action is permanent and cannot be undone. All associated photos, points, and game data will be permanently removed, and participants will lose access to this game."
+                    firstTextButton="Delete"
+                    firstButton={deleteGame}
+                    secondTextButton="Cancel"
+                    secondButton={() => setDeletePopUp(false)}
+                    type="delete"
+                />
+            </div>}
         </div>
     )
 }

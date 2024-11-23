@@ -18,7 +18,7 @@ function GameSettingsParticipants() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [participantsToRemove, setParticipantsToRemove] = useState([]);
-    const [filteredParticipants, setFilteredParticipants] = useState(null);
+    const [filteredParticipants, setFilteredParticipants] = useState([]);
 
     const _id = searchParams.get('_id');
 
@@ -69,6 +69,7 @@ function GameSettingsParticipants() {
 
     const handleApply = async () => {
         try {
+            setLoading(true);
             const response = await fetch(`/api/game/settings/${_id}/participants`, {
                 method: 'PUT',
                 headers: {
@@ -87,14 +88,16 @@ function GameSettingsParticipants() {
         } catch (err) {
             alert('Error removing participants');
             console.error(err);
+        } finally {
+            setLoading(false);
         }
     };
 
-    if (loading) return <Loader />;
     if (error) return <div>Error: {error}</div>;
 
     return (
         <div className="flex h-[100vh] items-center flex-col p-4 justify-between">
+            {loading && <Loader />}
             <div className="flex items-center flex-col p-4 gap-[21px]">
                 <Header
                     title="Game Settings"
