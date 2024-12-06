@@ -1,10 +1,14 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 
-export default function Upload({ width = 'w-[288px]', height = 'h-[494px]', border = 'rounded-none', borderColor = 'border-black', onImageChange }) {
+export default function Upload({ width = 'w-[288px]', height = 'h-[494px]', border = 'rounded-none', borderColor = 'border-black', onImageChange, defaultImage = '' }) {
   const fileInputRef = useRef(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
+
+  useEffect(() => {
+    setSelectedImage(defaultImage);
+  }, [defaultImage])
 
   const uploadImage = () => {
     fileInputRef.current.click();

@@ -28,7 +28,7 @@ export default function GameBreak({ photos, theme, gamemaster, gameId }) {
     }, [gamemaster]);
 
     useEffect(() => {
-        let winner = photos[0];
+        let winner = photos.length > 0 ? photos[0] : null;
 
         photos.forEach((current_photo) => {
             if (winner.votes.length < current_photo.votes.length) {
@@ -60,13 +60,21 @@ export default function GameBreak({ photos, theme, gamemaster, gameId }) {
                     </div>
                     <div className="text-end">
                         <div className={`flex w-[288px] h-[494px] items-center justify-center`}>
-                            <img src={photo.photo} alt="Selected" className={`w-full h-full object-cover rounded-md`} />
+                            {photo ? <img src={photo.photo} alt="Selected" className={`w-full h-full object-cover rounded-md`} /> : (
+                                <div className="flex w-full text-center">
+                                    <Text>Believe it or not there is no winner this time :/</Text>
+                                </div>
+                            )}
                         </div>
                         <div className="flex flex-row justify-between items-end">
                             <div className="flex mb-[3px]">
                                 <Text color="#5DB075" size="14px" weight="700">Winner: </Text>
                             </div>
-                            {photo && photo.user && <Text color="#5DB075" size="20px" weight="700">{photo.user.name}</Text>}
+                            {(photo && photo.user) ? <Text color="#5DB075" size="20px" weight="700">{photo.user.name}</Text> : (
+                                <div className="ml-1 mb-[3px]">
+                                    <Text size="14px">which makes this guy quite useless</Text>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

@@ -8,12 +8,14 @@ import Cookies from "js-cookie";
 import Text from "@/components/text";
 import Upload from "@/components/photo/upload";
 import GameTheme from "../theme";
+import Loader from "@/components/loader";
 
-export default function GameUploading({ contest, gamemaster, theme, category, gameId }) {
+export default function GameUploading({ contest, gamemaster, theme, category, gameId, photos }) {
     const router = useRouter();
     const [isGameMaster, setIsGameMaster] = useState(false);
     const [photo, setPhoto] = useState('');
     const [showTheme, setShowTheme] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const token = Cookies.get('token');
@@ -39,12 +41,54 @@ export default function GameUploading({ contest, gamemaster, theme, category, ga
         }
     }, [contest._id]);
 
+    useEffect(() => {
+        const token = Cookies.get('token');
+        let decoded;
+        try {
+            decoded = jwtDecode(token);
+            const userId = decoded.userId;
+            for (let it = 0; it < photos.length; it++) {
+                if (userId === photos[it].user_id) {
+                    setPhoto(photos[it].photo);
+                }
+            }
+        } catch (error) {
+            alert(error);
+            console.log('Error decoding token:', error);
+        }
+    }, [photos])
+
     const handleLeavingTheme = () => {
         setShowTheme(false);
     }
 
-    const handlePhotoChange = (image) => {
+    const handlePhotoChange = async (image) => {
         setPhoto(image);
+        try {
+            setLoading(true);
+            const response = await fetch(`/api/contest/upload/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${Cookies.get('token')}`
+                },
+                body: JSON.stringify({
+                    photo: image,
+                    contestId: contest._id
+                }),
+            });
+            const result = await response.json();
+            if (response.ok) {
+                alert('Picture set successfully');
+            } else {
+                alert(result.error || 'Failed to set picture');
+            }
+        } catch (err) {
+            alert('Error setting picture');
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     if (showTheme)
@@ -52,6 +96,7 @@ export default function GameUploading({ contest, gamemaster, theme, category, ga
 
     return (
         <div className="flex items-center flex-col p-4 gap-10">
+            {loading && <Loader />}
             <Header
                 title="Game"
                 left="Back"
@@ -69,7 +114,7 @@ export default function GameUploading({ contest, gamemaster, theme, category, ga
                 </div>
             </div>
             <div className="text-end">
-                <Upload onImageChange={handlePhotoChange} />
+                <Upload onImageChange={handlePhotoChange} defaultImage={photo ? photo : ''} />
                 {photo && <Text color="#5DB075" size="14px" weight="500">waiting for the voting time</Text>}
             </div>
         </div>

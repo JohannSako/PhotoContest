@@ -46,17 +46,15 @@ export async function GET(request, { params }) {
             });
         }
 
-        if (contest.state == "UPLOADING") {
-            return new Response(JSON.stringify({ game, contest, theme, photos: null, category }), {
-                status: 200,
-                headers: { 'Content-Type': 'application/json' },
-            });
-        }
-
         const photos = await photoCollection.find({ _id: { $in: contest.photos } }).toArray();
         if (!photos) {
             return new Response(JSON.stringify({ error: 'Photos not found' }), {
                 status: 404,
+                headers: { 'Content-Type': 'application/json' },
+            });
+        } else if (photos.length === 0) {
+            return new Response(JSON.stringify({ game, contest, theme, photos: [], category }), {
+                status: 202,
                 headers: { 'Content-Type': 'application/json' },
             });
         }
