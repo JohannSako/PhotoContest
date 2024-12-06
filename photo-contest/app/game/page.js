@@ -46,7 +46,7 @@ function Game() {
 
     switch (contest.state) {
         case 'UPLOADING':
-            return <GameUploading contest={contest} gamemaster={game.gamemaster} gameId={game._id} theme={theme} category={category} />
+            return <GameUploading contest={contest} gamemaster={game.gamemaster} gameId={game._id} theme={theme} category={category} photos={photos} />
         case 'VOTING':
             return <GameVoting gamemaster={game.gamemaster} gameId={game._id} theme={theme} photos={photos} />
         case 'BREAK':

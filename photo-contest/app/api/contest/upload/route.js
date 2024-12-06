@@ -24,11 +24,10 @@ async function authenticateToken(request) {
 export async function POST(request) {
   try {
     const userId = await authenticateToken(request);
-    const formData = await request.formData();
-    const file = formData.get('photo');
-    const contestId = formData.get('contestId');
+    const body = await request.json();
+    const { photo, contestId } = body;
 
-    if (!file || !contestId) {
+    if (!photo || !contestId) {
       return new Response(JSON.stringify({ error: 'Invalid input data' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
@@ -49,13 +48,11 @@ export async function POST(request) {
       });
     }
 
-    const photoUrl = `data:image/jpeg;base64,${Buffer.from(await file.arrayBuffer()).toString('base64')}`;
-
     await photoCollection.deleteOne({ contest_id: new ObjectId(contestId), user_id: new ObjectId(userId) });
 
     const newPhoto = {
       _id: new ObjectId(),
-      photo: photoUrl,
+      photo: photo,
       date: Date.now(),
       votes: [],
       contest_id: new ObjectId(contestId),
