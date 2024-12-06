@@ -1,22 +1,44 @@
 import React, { useRef, useState } from 'react';
-import '@fontsource/inter';
+import axios from 'axios';
 
-export default function Upload() {
+export default function Upload({ width = 'w-[288px]', height = 'h-[494px]', border = 'rounded-none', borderColor = 'border-black', onImageChange }) {
   const fileInputRef = useRef(null);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const uploadImage = () => {
     fileInputRef.current.click();
   };
 
+  const handleImageUpload = async (file) => {
+    setIsUploading(true);
+
+    // Préparer les données pour Cloudinary
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', 'photoContest');
+
+    try {
+      const response = await axios.post(
+        'https://api.cloudinary.com/v1_1/diwvp0p86/image/upload',
+        formData
+      );
+
+      const imageUrl = response.data.secure_url;
+      setSelectedImage(imageUrl);
+      onImageChange(imageUrl);
+    } catch (error) {
+      console.error('Erreur lors de l’upload :', error);
+      alert('Une erreur est survenue lors de l’upload.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedImage(reader.result);
-      };
-      reader.readAsDataURL(file);
+      handleImageUpload(file);
     }
   };
 
@@ -30,11 +52,13 @@ export default function Upload() {
         accept="image/*"
       />
       <div
-        className="flex w-72 h-[494px] bg-[#ECE2E2] border-black border-solid border-4 active:opacity-50 items-center justify-center cursor-pointer"
+        className={`flex ${width} ${height} bg-[#ECE2E2] ${borderColor} border-solid border-4 ${border} active:opacity-50 items-center justify-center cursor-pointer`}
         onClick={uploadImage}
       >
-        {selectedImage ? (
-          <img src={selectedImage} alt="Selected" className="w-full h-full object-cover" />
+        {isUploading ? (
+          <p>Uploading...</p>
+        ) : selectedImage ? (
+          <img src={selectedImage} alt="Selected" className={`w-full h-full object-cover ${border}`} />
         ) : (
           <svg xmlns="http://www.w3.org/2000/svg" width="76" height="72" viewBox="0 0 76 72" fill="none">
             <path

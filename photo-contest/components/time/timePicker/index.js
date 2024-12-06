@@ -14,7 +14,7 @@ export default function TimePicker({ cancelPicker, savePicker, time }) {
     return Array.from({ length }, (_, i) => start + i);
   };
 
-  const hoursRange = range(1, 12); // 1-12 for AM/PM format
+  const hoursRange = range(1, 12);
   const minutesRange = range(0, 59);
   const secondsRange = range(0, 59);
 
@@ -89,7 +89,7 @@ export default function TimePicker({ cancelPicker, savePicker, time }) {
 
   return (
     <div className="relative flex items-center justify-center w-full h-screen">
-      <div className="absolute w-[319px] h-[342px] bg-[#219B68] opacity-60 blur-[200px] top-[calc(0px)] right-[calc(-230px)]"></div>
+      <div className="absolute w-[319px] h-[342px] bg-[#219B68] opacity-60 blur-[150px] top-[calc(0px)] right-[calc(-230px)]"></div>
       <div className="absolute w-[421px] h-[421px] bg-[#219B68] opacity-30 blur-[150px] bottom-[calc(-140px)] left-[calc(-215px)]"></div>
       <div className="w-[343px] h-[346px] bg-white flex flex-shrink-0 backdrop-blur-lg rounded-lg flex-col pt-2 pb-4 px-4 z-10">
         <div className="flex w-full py-3 text-start">

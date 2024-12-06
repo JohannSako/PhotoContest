@@ -8,8 +8,17 @@ const nextConfig = {
                 port: '',
                 pathname: '/**',
             },
+            {
+                protocol: 'https',
+                hostname: '**.cloudinary.com',
+                port: '',
+                pathname: '/**',
+            },
         ],
     },
+    webpack: (config) => {
+        return config;
+    }
 };
 
 export default nextConfig;

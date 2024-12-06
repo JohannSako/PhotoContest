@@ -6,7 +6,7 @@ import CheckBoxText from '@/components/input/checkBox';
 
 export default function TimeSetCheck({ buttonText = 'Set Time', checkBoxText = 'When all players voted', timeValue = '00:00', onClick, state = false, setState }) {
     return (
-        <div className="w-[366px] h-[55px] flex flex-col flex-shrink-0 gap-3">
+        <div className="w-full h-[55px] flex flex-col flex-shrink-0 gap-3">
             <div className="flex flex-row items-center justify-between w-full gap-[10px]">
                 <div className="flex flex-row items-center justify-between w-1/2">
                     <Text weight='600' color={state ? '#BDBDBD' : '#000000'}>{timeValue}</Text>

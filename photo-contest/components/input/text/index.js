@@ -21,7 +21,7 @@ export default function TextInput({ placeholder = 'Enter text', value, onChange,
                 onClick={toggleShowPassword}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-green-primary font-medium text-16 leading-normal"
             >
-                {showPassword ? "Hide" : "Show"}
+                {showPassword ? "Show" : "Hide"}
             </span> : <></>}
         </div>
     );

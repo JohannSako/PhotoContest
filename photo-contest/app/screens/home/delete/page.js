@@ -1,1 +1,0 @@
-export default function HomeDelete() { return <div></div> }
