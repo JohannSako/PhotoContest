@@ -3,13 +3,18 @@ import { ObjectId } from 'mongodb';
 import { contactParticipants } from '../contest/route';
 import { getRandomTheme } from '../contest/route';
 
+function normalizeToTime(milliseconds) {
+    const date = new Date(milliseconds);
+    return date.getHours() * 60 + date.getMinutes();
+}
+
 async function updateContestState() {
     const client = await clientPromise;
     const db = client.db('main');
     const gameCollection = db.collection('game');
     const contestCollection = db.collection('contest');
 
-    const now = Date.now();
+    const now = normalizeToTime(Date.now());
 
     const games = await gameCollection.find().toArray();
 
@@ -18,7 +23,12 @@ async function updateContestState() {
 
         if (!contest) continue;
 
-        if (contest.state === 'UPLOADING' && now >= game.endUpload) {
+        const endUploadTime = normalizeToTime(game.endUpload);
+        const endVoteTime = normalizeToTime(game.endVote);
+        const startUploadTime = normalizeToTime(game.startUpload);
+
+        console.log(now, endUploadTime, endVoteTime, startUploadTime);
+        if (contest.state === 'UPLOADING' && now >= endUploadTime) {
 
             await contestCollection.updateOne(
                 { _id: contest._id },
@@ -29,7 +39,7 @@ async function updateContestState() {
                 title: 'Contest Voting Started',
                 content: 'The contest voting period has started. Please vote for your favorite photos.'
             });
-        } else if (contest.state === 'VOTING' && (now >= game.endVote || (game.whenPlayersVoted && await allParticipantsVoted(game)))) {
+        } else if (contest.state === 'VOTING' && (now >= endVoteTime || (game.whenPlayersVoted && await allParticipantsVoted(game)))) {
 
             await contestCollection.updateOne(
                 { _id: contest._id },
@@ -40,17 +50,12 @@ async function updateContestState() {
                 title: 'Contest Voting Ended',
                 content: 'The contest voting period has ended. Please check the results.'
             });
-        } else if (contest.state === 'BREAK' && now >= game.startUpload) {
+        } else if (contest.state === 'BREAK' && now >= startUploadTime && now <= endUploadTime) {
             const newContestId = await createNewContest(game, db);
             await gameCollection.updateOne(
                 { _id: game._id },
                 { $set: { contest: newContestId }, $push: { history: contest._id } }
             );
-
-            await contactParticipants(game.participants.concat(game.gamemaster), {
-                title: 'New Contest Started',
-                content: 'A new contest has started. Please upload your photos.'
-            });
         }
     }
 }
