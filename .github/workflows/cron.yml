@@ -10,4 +10,4 @@ jobs:
     steps:
       - name: Call the URL
         run: |
-          curl -X GET 
+          curl -X GET https://photo-contest-webapp.vercel.app/api/cron
