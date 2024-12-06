@@ -99,7 +99,7 @@ async function createNewContest(game, db) {
     return result.insertedId;
 }
 
-export async function POST(request) {
+export async function GET(request) {
     try {
         await updateContestState();
         return new Response(JSON.stringify({ message: 'Cron job executed successfully' }), {
