@@ -1,0 +1,13 @@
+name: Call URL every 5 minutes
+
+on:
+  schedule:
+    - cron: "*/5 * * * *" # Every 5min
+
+jobs:
+  call-endpoint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call the URL
+        run: |
+          curl -X GET https://photo-contest-webapp.vercel.app/api/cron
