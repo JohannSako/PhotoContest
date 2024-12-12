@@ -92,6 +92,8 @@ function GameSettingsContestTime() {
     const dateToHMString = (date) => {
         let formattedString = "";
 
+        if (date == null)
+            return "";
         formattedString += date.getHours() > 9 ? date.getHours() : "0" + date.getHours();
         formattedString += ":";
         formattedString += date.getMinutes() > 9 ? date.getMinutes() : "0" + date.getMinutes();
