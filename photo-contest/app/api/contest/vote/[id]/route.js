@@ -49,11 +49,24 @@ export async function POST(request, { params }) {
       });
     }
 
-    if (photo.votes.includes(userId)) {
+    if (photo.votes.some(voteId => voteId.equals(new ObjectId(userId)))) {
       return new Response(JSON.stringify({ error: 'User has already voted for this photo' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
       });
+    }
+
+    let hasChanged = false;
+
+    const photos = await photoCollection.find({ contest_id: new ObjectId(photo.contest_id) }).toArray();
+    for (let current_photo of photos) {
+      if (current_photo.votes.some(voteId => voteId.equals(new ObjectId(userId)))) {
+        hasChanged = true;
+        await photoCollection.updateOne(
+          { _id: new ObjectId(current_photo._id) },
+          { $pull: { votes: new ObjectId(userId) } }
+        );
+      }
     }
 
     await photoCollection.updateOne(
@@ -62,7 +75,7 @@ export async function POST(request, { params }) {
     );
 
     return new Response(JSON.stringify({ message: 'Vote cast successfully' }), {
-      status: 200,
+      status: hasChanged ? 201 : 200,
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {

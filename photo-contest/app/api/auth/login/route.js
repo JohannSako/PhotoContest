@@ -16,7 +16,7 @@ export async function POST(request) {
     const body = await request.json();
 
     if (!isLoginRequestBody(body)) {
-      return new Response(JSON.stringify({ error: 'Invalid input data' }), {
+      return new Response(JSON.stringify({ error: 'Invalid format: mail and password are required' }), {
         status: 400,
         headers: {
           'Content-Type': 'application/json',

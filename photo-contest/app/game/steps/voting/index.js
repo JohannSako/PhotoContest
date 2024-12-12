@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
 import Text from "@/components/text";
-import Upload from "@/components/photo/upload";
+import Loader from "@/components/loader";
 import Carousel from "@/components/photo/carousel";
 import Like from "@/components/photo/like";
 
@@ -17,6 +17,7 @@ export default function GameVoting({ gamemaster, theme, photos, gameId }) {
     const [index, setIndex] = useState(0);
     const [like, setLike] = useState(false);
     const [likedPictureIndex, setLikedPictureIndex] = useState(-1);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const token = Cookies.get('token');
@@ -31,12 +32,55 @@ export default function GameVoting({ gamemaster, theme, photos, gameId }) {
             alert(error);
             console.log('Error decoding token:', error);
         }
-    }, [gamemaster])
+    }, [gamemaster]);
 
     useEffect(() => {
-        if (like && index !== likedPictureIndex)
-            setLikedPictureIndex(index);
-    }, [like])
+        const token = Cookies.get('token');
+        let decoded;
+        try {
+            decoded = jwtDecode(token);
+            const userId = decoded.userId;
+            for (let it = 0; it < photos.length; it++) {
+                for (let vote of photos[it].votes) {
+                    if (vote === userId) {
+                        setLikedPictureIndex(it);
+                        if (it === 0)
+                            setLike(true);
+                    }
+                }
+            }
+        } catch (error) {
+            alert(error);
+            console.log('Error decoding token:', error);
+        }
+    }, [photos]);
+
+    const handleVote = async () => {
+        try {
+            setLoading(true);
+            const response = await fetch(`/api/contest/vote/` + photos[index]._id, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${Cookies.get('token')}`
+                }
+            });
+            const result = await response.json();
+            if (response.ok) {
+                alert(response.status === 200 ? 'Your vote has been saved !' : 'Your vote has been updated !');
+                setLikedPictureIndex(index);
+                setLike(true);
+            } else {
+                alert(result.error || 'Failed to vote');
+            }
+        } catch (err) {
+            alert('Error voting');
+            alert(err);
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    }
 
     useEffect(() => {
         if (like && index !== likedPictureIndex)
@@ -45,12 +89,15 @@ export default function GameVoting({ gamemaster, theme, photos, gameId }) {
             setLike(true);
     }, [index])
 
-    const handlePhotoChange = (image) => {
-        setPhoto(image);
-    };
+    const handleLike = (state) => {
+        setLike(state);
+        if (index !== likedPictureIndex)
+            handleVote();
+    }
 
     return (
         <div className="flex h-[100vh] items-center flex-col gap-6 bg-gray-800">
+            {loading && <Loader />}
             <div className="items-center gap-10 bg-primary w-full p-4 z-10">
                 <Header
                     title="Game"
@@ -74,15 +121,14 @@ export default function GameVoting({ gamemaster, theme, photos, gameId }) {
             <div className="absolute w-full h-full overflow-hidden">
                 {photos.length > 0 && <img className="w-full h-full object-cover blur-[10px] opacity-30" src={photos[index].photo} alt="Background" />}
             </div>
-            <div className="text-end">
+            <div className="flex w-full h-full text-end">
                 {photos.length > 0 ? <Carousel photos={photos} setIndex={setIndex} /> : (
                     <div className="flex w-full text-center">
                         <Text color="white">Well looks like no one felt like posting pictures today.. See you tomorrow :)</Text>
                     </div>
                 )}
-                {photo && <Text color="#5DB075" size="14px" weight="500">waiting for the voting time</Text>}
                 {photos.length > 0 && <div className="flex absolute w-full justify-center bottom-1">
-                    <Like like={like} setLike={setLike} />
+                    <Like like={like} setLike={handleLike} />
                 </div>}
             </div>
         </div>
