@@ -121,13 +121,13 @@ export default function GameVoting({ gamemaster, theme, photos, gameId }) {
             <div className="absolute w-full h-full overflow-hidden">
                 {photos.length > 0 && <img className="w-full h-full object-cover blur-[10px] opacity-30" src={photos[index].photo} alt="Background" />}
             </div>
-            <div className="flex w-full h-full text-end">
+            <div className="flex flex-col h-full text-end items-center justify-center gap-4">
                 {photos.length > 0 ? <Carousel photos={photos} setIndex={setIndex} /> : (
-                    <div className="flex w-full text-center">
+                    <div className="flex text-center">
                         <Text color="white">Well looks like no one felt like posting pictures today.. See you tomorrow :)</Text>
                     </div>
                 )}
-                {photos.length > 0 && <div className="flex absolute w-full justify-center bottom-1">
+                {photos.length > 0 && <div className="flex">
                     <Like like={like} setLike={handleLike} />
                 </div>}
             </div>

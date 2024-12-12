@@ -9,7 +9,7 @@ export default function Carousel({ photos, setIndex }) {
   };
 
   return (
-    <div className="w-full h-full flex items-center justify-center">
+    <div className="flex">
       <Swiper
         onSlideChange={handleSlideChange}
         centeredSlides={true}
@@ -34,11 +34,6 @@ export default function Carousel({ photos, setIndex }) {
                 alt={`Photo by ${photo.user.name}`}
                 className="w-full h-full object-cover"
               />
-            </div>
-            <div className="flex justify-end mt-2">
-              <Text size="22px" weight="700" color="white">
-                {photo.user.name}
-              </Text>
             </div>
           </SwiperSlide>
         ))}

@@ -8,6 +8,13 @@ function normalizeToTime(milliseconds) {
     return date.getHours() * 60 + date.getMinutes();
 }
 
+function isNowNextDay(time) {
+    const now = new Date();
+    const timeToVerify = new Date(time);
+
+    return now.getDay() > timeToVerify.getDay();
+}
+
 async function updateContestState() {
     const client = await clientPromise;
     const db = client.db('main');
@@ -27,9 +34,9 @@ async function updateContestState() {
         const endVoteTime = normalizeToTime(game.endVote);
         const startUploadTime = normalizeToTime(game.startUpload);
 
-        console.log(now, endUploadTime, endVoteTime, startUploadTime);
-        if (contest.state === 'UPLOADING' && now >= endUploadTime) {
+        const contestCreationTime = normalizeToTime(contest.date);
 
+        if (contest.state === 'UPLOADING' && now >= endUploadTime && (contestCreationTime < endUploadTime || isNowNextDay(contest.date))) {
             await contestCollection.updateOne(
                 { _id: contest._id },
                 { $set: { state: 'VOTING' } }

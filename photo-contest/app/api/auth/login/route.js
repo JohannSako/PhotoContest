@@ -5,7 +5,7 @@ import { SignJWT } from 'jose';
 function isLoginRequestBody(body) {
   return (
     typeof body.mail === 'string' &&
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.mail) &&
+    body.mail.length >= 4 &&
     typeof body.password === 'string' &&
     body.password.length >= 6
   );
@@ -16,7 +16,7 @@ export async function POST(request) {
     const body = await request.json();
 
     if (!isLoginRequestBody(body)) {
-      return new Response(JSON.stringify({ error: 'Invalid format: mail and password are required' }), {
+      return new Response(JSON.stringify({ error: 'Invalid format: username/mail and password are required' }), {
         status: 400,
         headers: {
           'Content-Type': 'application/json',
@@ -30,8 +30,10 @@ export async function POST(request) {
     const db = client.db('main');
     const userCollection = db.collection('userdata');
 
-    const user = await userCollection.findOne({ mail });
+    let user = await userCollection.findOne({ mail });
 
+    if (!user)
+      user = await userCollection.findOne({name: mail});
     if (!user) {
       return new Response(JSON.stringify({ error: 'User not found' }), {
         status: 404,
