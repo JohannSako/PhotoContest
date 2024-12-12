@@ -149,7 +149,7 @@ export default function Home() {
                         key={game._id}
                         result={game.title}
                         handleResult={() => enterGame(game._id)}
-                        calendar={() => router.push('/home/calendar')}
+                        calendar={() => router.push(`/home/calendar?_id=${game._id}`)}
                         bin={() => openPopUp(game.gamemaster, game._id)}
                     />
                 ))}
