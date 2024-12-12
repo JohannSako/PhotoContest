@@ -13,7 +13,6 @@ import Loader from "@/components/loader";
 export default function AuthLogin() {
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
-    const router = useRouter();
     const [loading, setLoading] = useState(false);
 
     const handleLoginChange = (e) => {
@@ -38,16 +37,16 @@ export default function AuthLogin() {
             const data = await response.json();
 
             if (response.ok) {
-                Cookies.set('token', data.token, { expires: 7 });
-                router.push('/home/');
+                Cookies.set('token', data.token, { expires: 7, path: '/' });
+                window.location.href = '/home/';
             } else {
+                setLoading(false);
                 alert(data.error);
             }
         } catch (error) {
+            setLoading(false);
             alert('Error logging in. Please try again.');
             console.error('Error logging in:', error);
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -72,5 +71,5 @@ export default function AuthLogin() {
                 </Link>
             </div>
         </div>
-    )
+    );
 }

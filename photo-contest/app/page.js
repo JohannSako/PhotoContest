@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import SplashScreen from "./splash/page";
 import { useRouter } from 'next/navigation';
+import Cookies from "js-cookie";
 
 export default function HomePage() {
   const [loading, setLoading] = useState(true);
@@ -10,12 +11,11 @@ export default function HomePage() {
 
   const finishLoading = () => {
     setLoading(false);
+    const token = Cookies.get('token');
     router.push('/home');
   };
 
   useEffect(() => {
-    router.prefetch('/home');
-
     const timer = setTimeout(() => {
       finishLoading();
     }, 4000);
