@@ -12,8 +12,8 @@ import PopUp from "@/components/popUp";
 function GameSettings() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const [data, setData] = useState(null);
     const [title, setTitle] = useState('');
+    const [code, setCode] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [deletePopUp, setDeletePopUp] = useState(false);
@@ -30,8 +30,8 @@ function GameSettings() {
                     throw new Error(result.error || 'Failed to fetch data');
                 }
 
-                setData(result);
                 setTitle(result.game.title)
+                setCode(result.game.code);
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -133,6 +133,12 @@ function GameSettings() {
                         type="secondary"
                         width="343px"
                         onClick={() => router.push(`/game/settings/contestTime?_id=${_id}`)}
+                    />
+                    <Button
+                        text="Code"
+                        type="secondary"
+                        width="343px"
+                        onClick={() => alert("CODE: " + code)}
                     />
                 </div>
             </div>

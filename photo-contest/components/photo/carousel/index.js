@@ -22,11 +22,10 @@ export default function Carousel({ photos, setIndex }) {
           <SwiperSlide
             key={index}
             style={{
-              // Définit une taille standard pour chaque slide
-              width: '60vw',     // 50% de la largeur de la fenêtre
-              height: '60vh',    // 70% de la hauteur de la fenêtre
-              maxWidth: '600px', // Optionnel : on limite la taille max si besoin
-              maxHeight: '700px' // Optionnel : limite la taille max
+              width: '60vw',
+              height: '60vh',
+              maxWidth: '600px',
+              maxHeight: '700px'
             }}
           >
             <div className="w-full h-full overflow-hidden rounded-md">
