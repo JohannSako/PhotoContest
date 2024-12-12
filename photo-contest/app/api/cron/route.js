@@ -95,7 +95,7 @@ async function createNewContest(game, db) {
         theme: theme._id,
         category: new ObjectId(categoryId),
         photos: [],
-        date: new Date(new Date().toISOString().split('T')[0]).getTime(),
+        date: new Date().getTime(),
         state: 'UPLOADING',
     };
 
