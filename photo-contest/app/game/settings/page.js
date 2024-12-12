@@ -8,6 +8,7 @@ import Loader from "@/components/loader";
 import Button from "@/components/input/button";
 import Cookies from "js-cookie";
 import PopUp from "@/components/popUp";
+import toast from "react-hot-toast";
 
 function GameSettings() {
     const router = useRouter();
@@ -59,12 +60,12 @@ function GameSettings() {
             });
             const result = await response.json();
             if (response.ok) {
-                alert('Title updated successfully');
+                toast.success('Title updated successfully');
             } else {
-                alert(result.error || 'Failed to update title');
+                toast.error(result.error || 'Failed to update title');
             }
         } catch (err) {
-            alert('Error updating title');
+            toast.error('Error updating title');
             console.error(err);
         } finally {
             setLoading(false);
@@ -87,13 +88,13 @@ function GameSettings() {
             });
             const data = await response.json();
             if (response.ok) {
-                alert('Game has been successfully deleted !');
+                toast.success('Game has been successfully deleted !');
                 router.push('/home');
             } else {
-                alert(data.error);
+                toast.error(data.error);
             }
         } catch (error) {
-            alert('Error deleting game');
+            toast.error('Error deleting game');
             console.log(error);
         } finally {
             setLoading(false);
@@ -138,7 +139,7 @@ function GameSettings() {
                         text="Code"
                         type="secondary"
                         width="343px"
-                        onClick={() => alert("CODE: " + code)}
+                        onClick={() => toast.success("CODE: " + code)}
                     />
                 </div>
             </div>

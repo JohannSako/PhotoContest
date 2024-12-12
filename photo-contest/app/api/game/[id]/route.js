@@ -16,7 +16,7 @@ export async function GET(request, { params }) {
                 headers: { 'Content-Type': 'application/json' },
             });
         }
-        
+
         return new Response(JSON.stringify({ game }), {
             status: 200,
             headers: { 'Content-Type': 'application/json' },

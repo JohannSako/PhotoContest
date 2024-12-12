@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
+import toast from "react-hot-toast";
 
 export default function Upload({ width = 'w-[288px]', height = 'h-[494px]', border = 'rounded-none', borderColor = 'border-black', onImageChange, defaultImage = '' }) {
   const fileInputRef = useRef(null);
@@ -33,7 +34,7 @@ export default function Upload({ width = 'w-[288px]', height = 'h-[494px]', bord
       onImageChange(imageUrl);
     } catch (error) {
       console.error('Erreur lors de l’upload :', error);
-      alert('Une erreur est survenue lors de l’upload.');
+      toast.error('Une erreur est survenue lors de l’upload.');
     } finally {
       setIsUploading(false);
     }

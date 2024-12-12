@@ -9,6 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Text from "@/components/text";
 import Loader from "@/components/loader";
+import toast from "react-hot-toast";
 
 function AuthLoginVerify() {
     const searchParams = useSearchParams();
@@ -42,10 +43,10 @@ function AuthLoginVerify() {
             if (response.ok) {
                 router.push(`/auth/login/forgetPassword/validate?email=${email}`);
             } else {
-                alert(data.error);
+                toast.error(data.error);
             }
         } catch (error) {
-            alert(error)
+            toast.error(error)
             console.error('Error verifying code:', error);
         } finally {
             setLoading(false);
@@ -68,12 +69,12 @@ function AuthLoginVerify() {
             console.log('Response data:', data);
 
             if (response.ok) {
-                alert("Code has been successfully sent !");
+                toast.success("Code has been successfully sent !");
             } else {
-                alert(data.error || 'Something went wrong');
+                toast.error(data.error || 'Something went wrong');
             }
         } catch (error) {
-            alert('An unexpected error occurred');
+            toast.error('An unexpected error occurred');
             console.error('Error sending code:', error);
         } finally {
             setLoading(false);

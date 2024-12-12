@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Day from '../day';
 import Text from '@/components/text';
+import toast from "react-hot-toast";
+import { useState } from 'react';
 
 const getDaysInMonth = (month, year) => {
   return new Date(year, month + 1, 0).getDate();
@@ -12,12 +14,12 @@ const getFirstDayOfWeek = (month, year) => {
 };
 
 const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-export default function Month({ monthYear, contests }) {
-  const [monthName, year] = monthYear.split(' ');
-  const month = new Date(`${monthName} 1, ${year}`).getMonth();
-  const daysInMonth = getDaysInMonth(month, parseInt(year));
-  let firstDayOfWeek = getFirstDayOfWeek(month, parseInt(year)) - 1;
+export default function Month({ monthNb, year, contests, handleClick }) {
+  const month = new Date(`${months[monthNb - 1]} 1, ${year}`).getMonth();
+  const daysInMonth = getDaysInMonth(month, year);
+  let firstDayOfWeek = getFirstDayOfWeek(month, year) - 1;
   if (firstDayOfWeek === -1) firstDayOfWeek = 6;
 
   const days = [];
@@ -30,11 +32,13 @@ export default function Month({ monthYear, contests }) {
   }
 
   const contestsByDay = {};
-  contests.forEach(contest => {
-    const date = new Date(contest.date);
-    const day = date.getDate();
-    contestsByDay[day] = contest;
-  });
+  if (contests) {
+    contests.forEach(contest => {
+      const date = new Date(contest.date);
+      const day = date.getDate();
+      contestsByDay[day] = contest;
+    });
+  }
 
   const today = new Date();
 
@@ -44,7 +48,7 @@ export default function Month({ monthYear, contests }) {
 
   return (
     <div className='text-start'>
-      <Text size="16px" weight="600" color="#FFF" style={{ fontVariantNumeric: 'slashed-zero' }}>{monthYear}</Text>
+      <Text size="16px" weight="600" color="#FFF" style={{ fontVariantNumeric: 'slashed-zero' }}>{`${months[monthNb - 1]} ${year}`}</Text>
       <div className="text-center grid grid-cols-7 gap-2">
         {daysOfWeek.map(day => (
           <Text key={day} size="14px" weight="400" color="#FFF" style={{ fontVariantNumeric: 'slashed-zero' }} className="text-center">{day}</Text>
@@ -57,12 +61,14 @@ export default function Month({ monthYear, contests }) {
           }
 
           const contest = contestsByDay[day];
-          const state = contest ? 'IMAGE' : (isItToday(day) ? 'TODAY' : 'EMPTY');
-          const image = contest ? contest.photo : '';
+          let state = contest && contest.photo ? 'IMAGE' : 'EMPTY';
+          if (isItToday(day))
+            state += 'TODAY';
+          const image = (contest && contest.photo) ? contest.photo.photo : '';
 
-          const handleClick = () => {
+          const checkClick = () => {
             if (contest) {
-              alert(`Contest ID: ${contest.id}`);
+              handleClick(contest._id);
             }
           };
 
@@ -72,7 +78,7 @@ export default function Month({ monthYear, contests }) {
               day={day}
               state={state}
               image={image}
-              onClick={handleClick}
+              onClick={checkClick}
             />
           );
         })}

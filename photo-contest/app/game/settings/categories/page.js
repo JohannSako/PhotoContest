@@ -8,6 +8,7 @@ import Loader from "@/components/loader";
 import Button from "@/components/input/button";
 import Category from "@/components/category";
 import Cookies from "js-cookie";
+import toast from "react-hot-toast";
 
 function GameSettingsCategories() {
     const router = useRouter();
@@ -53,10 +54,10 @@ function GameSettingsCategories() {
                     setCategories(data);
                     setFilteredCategories(data);
                 } else {
-                    alert('Failed to load categories');
+                    toast.error('Failed to load categories');
                 }
             } catch (err) {
-                alert('Error fetching categories');
+                toast.error('Error fetching categories');
             }
         }
 
@@ -85,13 +86,13 @@ function GameSettingsCategories() {
             });
             const result = await response.json();
             if (response.ok) {
-                alert('Categories updated successfully');
+                toast.success('Categories updated successfully');
                 router.back();
             } else {
-                alert(result.error || 'Failed to update categories');
+                toast.error(result.error || 'Failed to update categories');
             }
         } catch (err) {
-            alert('Error updating categories');
+            toast.error('Error updating categories');
             console.error(err);
         } finally {
             setLoading(false);

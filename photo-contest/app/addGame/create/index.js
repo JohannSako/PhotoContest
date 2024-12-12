@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Category from "@/components/category";
 import TextInput from '@/components/input/text';
 import Loader from '@/components/loader';
+import toast from "react-hot-toast";
 
 export default function CreateGame({ title, setTitle, setActiveCategories }) {
     const [categories, setCategories] = useState([]);
@@ -25,10 +26,10 @@ export default function CreateGame({ title, setTitle, setActiveCategories }) {
                     });
                     setStateCategories(initialState);
                 } else {
-                    alert(data.error);
+                    toast.error(data.error);
                 }
             } catch (err) {
-                alert('Error fetching categories');
+                toast.error('Error fetching categories');
                 console.log(err);
             } finally {
                 setLoading(false);

@@ -11,6 +11,7 @@ import TimeSetDuo from "@/components/time/timeSet/duo";
 import TimeSetCheck from "@/components/time/timeSet/check";
 import TimePicker from "@/components/time/timePicker";
 import Cookies from "js-cookie";
+import toast from "react-hot-toast";
 
 function GameSettingsContestTime() {
     const router = useRouter();
@@ -76,13 +77,13 @@ function GameSettingsContestTime() {
             });
             const result = await response.json();
             if (response.ok) {
-                alert('Contest times updated successfully');
+                toast.error('Contest times updated successfully');
                 router.back();
             } else {
-                alert(result.error || 'Failed to update contest times');
+                toast.error(result.error || 'Failed to update contest times');
             }
         } catch (err) {
-            alert('Error updating contest times');
+            toast.error('Error updating contest times');
             console.error(err);
         } finally {
             setLoading(false);

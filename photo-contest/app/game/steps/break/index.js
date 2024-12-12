@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
 import Text from "@/components/text";
+import toast from "react-hot-toast";
 
 export default function GameBreak({ photos, theme, gamemaster, gameId }) {
     const router = useRouter();
@@ -22,7 +23,7 @@ export default function GameBreak({ photos, theme, gamemaster, gameId }) {
                 setIsGameMaster(true);
             }
         } catch (error) {
-            alert(error);
+            toast.error(error);
             console.log('Error decoding token:', error);
         }
     }, [gamemaster]);

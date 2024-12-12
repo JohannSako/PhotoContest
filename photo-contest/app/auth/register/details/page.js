@@ -11,6 +11,7 @@ import { useSearchParams } from "next/navigation";
 import Header from "@/components/header";
 import Upload from "@/components/photo/upload";
 import Loader from "@/components/loader";
+import toast from "react-hot-toast";
 
 function AuthRegisterDetails() {
     const [username, setUsername] = useState('');
@@ -51,10 +52,10 @@ function AuthRegisterDetails() {
             if (response.ok) {
                 router.push('/auth/login');
             } else {
-                alert(data.error);
+                toast.error(data.error);
             }
         } catch (error) {
-            alert('Error during register. Please try again.');
+            toast.error('Error during register. Please try again.');
             console.error('Error during register:', error);
         } finally {
             setLoading(false);

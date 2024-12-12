@@ -9,6 +9,7 @@ import Cookies from "js-cookie";
 import PopUp from "@/components/popUp";
 import { jwtDecode } from "jwt-decode";
 import Loader from "@/components/loader";
+import toast from "react-hot-toast";
 
 const leavePopUpInfo = {
     title: "Leaving your game",
@@ -44,10 +45,10 @@ export default function Home() {
             if (response.ok) {
                 setGames(data);
             } else {
-                alert(data.error);
+                toast.error(data.error);
             }
         } catch (err) {
-            alert('Error fetching games');
+            toast.error('Error fetching games');
             console.log(err);
         } finally {
             setLoading(false);
@@ -88,7 +89,7 @@ export default function Home() {
             setGameId(id);
             setBinPopUp(true);
         } catch (error) {
-            alert(error);
+            toast.error(error);
             console.log('Error decoding token:', error);
         }
     }
@@ -111,16 +112,16 @@ export default function Home() {
             });
             const data = await response.json();
             if (response.ok) {
-                alert('Game has been successfully left !');
+                toast.success('Game has been successfully left !');
                 setBinPopUp(false);
                 setIsGameMaster(false);
                 setGameId('');
                 getGames();
             } else {
-                alert(data.error);
+                toast.error(data.error);
             }
         } catch (error) {
-            alert('Error deleting game');
+            toast.error('Error deleting game');
             console.log(error);
         } finally {
             setLoading(false);
@@ -148,7 +149,7 @@ export default function Home() {
                         key={game._id}
                         result={game.title}
                         handleResult={() => enterGame(game._id)}
-                        calendar={() => router.push('/home/calendar')}
+                        calendar={() => router.push(`/home/calendar?_id=${game._id}`)}
                         bin={() => openPopUp(game.gamemaster, game._id)}
                     />
                 ))}

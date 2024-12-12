@@ -4,6 +4,7 @@ import Loader from "@/components/loader";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function JoinGame() {
     const [code, setCode] = useState('');
@@ -28,14 +29,14 @@ export default function JoinGame() {
             const data = await response.json();
 
             if (response.ok) {
-                alert('Joined game successfully');
+                toast.success('Joined game successfully');
                 router.back()
             } else {
-                alert(data.error);
+                toast.error(data.error);
             }
         } catch (error) {
             console.error('Error joining game:', error.message);
-            alert('Error joining game');
+            toast.error('Error joining game');
         } finally {
             setLoading(false);
         }

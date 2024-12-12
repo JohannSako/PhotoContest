@@ -7,6 +7,7 @@ import GameVoting from './steps/voting';
 import GameBreak from './steps/break';
 import Loader from '@/components/loader';
 import GameTheme from './steps/theme';
+import toast from "react-hot-toast";
 
 function Game() {
     const searchParams = useSearchParams();
@@ -52,7 +53,7 @@ function Game() {
         case 'BREAK':
             return <GameBreak gamemaster={game.gamemaster} gameId={game._id} theme={theme} photos={photos} />
         default:
-            alert('the state is invalid: ' + contest.state);
+            toast.error('the state is invalid: ' + contest.state);
             router.back();
     }
 }
