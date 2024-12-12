@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Day from '../day';
 import Text from '@/components/text';
+import toast from "react-hot-toast";
 
 const getDaysInMonth = (month, year) => {
   return new Date(year, month + 1, 0).getDate();
@@ -62,7 +63,7 @@ export default function Month({ monthYear, contests }) {
 
           const handleClick = () => {
             if (contest) {
-              alert(`Contest ID: ${contest.id}`);
+              toast.success(`Contest ID: ${contest.id}`);
             }
           };
 

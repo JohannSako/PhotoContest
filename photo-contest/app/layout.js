@@ -1,3 +1,4 @@
+import ClientToastProvider from '@/components/toast';
 import './globals.css';
 import MainLayout from '@/components/layout/main';
 
@@ -20,6 +21,7 @@ export default function RootLayout({ children }) {
         <MainLayout>
           {children}
         </MainLayout>
+        <ClientToastProvider />
       </body>
     </html>
   );

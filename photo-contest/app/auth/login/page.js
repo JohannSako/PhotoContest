@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Cookies from "js-cookie";
 import Loader from "@/components/loader";
+import toast from "react-hot-toast";
 
 export default function AuthLogin() {
     const [login, setLogin] = useState('');
@@ -41,11 +42,11 @@ export default function AuthLogin() {
                 window.location.href = '/home/';
             } else {
                 setLoading(false);
-                alert(data.error);
+                toast.error(data.error);
             }
         } catch (error) {
             setLoading(false);
-            alert('Error logging in. Please try again.');
+            toast.error('Error logging in. Please try again.');
             console.error('Error logging in:', error);
         }
     };

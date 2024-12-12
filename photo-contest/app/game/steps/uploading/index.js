@@ -9,6 +9,7 @@ import Text from "@/components/text";
 import Upload from "@/components/photo/upload";
 import GameTheme from "../theme";
 import Loader from "@/components/loader";
+import toast from "react-hot-toast";
 
 export default function GameUploading({ contest, gamemaster, theme, category, gameId, photos }) {
     const router = useRouter();
@@ -27,7 +28,7 @@ export default function GameUploading({ contest, gamemaster, theme, category, ga
                 setIsGameMaster(true);
             }
         } catch (error) {
-            alert(error);
+            toast.error(error);
             console.log('Error decoding token:', error);
         }
     }, [gamemaster])
@@ -53,7 +54,7 @@ export default function GameUploading({ contest, gamemaster, theme, category, ga
                 }
             }
         } catch (error) {
-            alert(error);
+            toast.error(error);
             console.log('Error decoding token:', error);
         }
     }, [photos])
@@ -79,12 +80,12 @@ export default function GameUploading({ contest, gamemaster, theme, category, ga
             });
             const result = await response.json();
             if (response.ok) {
-                alert('Picture set successfully');
+                toast.success('Picture set successfully');
             } else {
-                alert(result.error || 'Failed to set picture');
+                toast.error(result.error || 'Failed to set picture');
             }
         } catch (err) {
-            alert('Error setting picture');
+            toast.error('Error setting picture');
             console.error(err);
         } finally {
             setLoading(false);

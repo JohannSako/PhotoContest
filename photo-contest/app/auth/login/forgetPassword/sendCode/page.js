@@ -7,6 +7,7 @@ import Header from "@/components/header"
 import { useState } from "react"
 import { useRouter } from "next/navigation";
 import Loader from "@/components/loader";
+import toast from "react-hot-toast";
 
 export default function AuthLoginSendCode() {
     const [email, setEmail] = useState('')
@@ -35,10 +36,10 @@ export default function AuthLoginSendCode() {
             if (response.ok) {
                 router.push(`/auth/login/forgetPassword/verify?email=${email}`);
             } else {
-                alert(data.error || 'Something went wrong');
+                toast.error(data.error || 'Something went wrong');
             }
         } catch (error) {
-            alert('An unexpected error occurred');
+            toast.error('An unexpected error occurred');
             console.error('Error sending code:', error);
         } finally {
             setLoading(false);

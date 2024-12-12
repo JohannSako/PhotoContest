@@ -9,6 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Text from "@/components/text";
 import Loader from "@/components/loader";
+import toast from "react-hot-toast";
 
 function AuthLoginValidate() {
     const [password, setPassword] = useState('');
@@ -29,7 +30,7 @@ function AuthLoginValidate() {
 
     const validate = async () => {
         if (password !== confirmPassword) {
-            alert('Passwords do not match');
+            toast.error('Passwords do not match');
             return;
         }
 
@@ -44,13 +45,13 @@ function AuthLoginValidate() {
             });
             const data = await response.json();
             if (response.ok) {
-                alert('Password reset successfully');
+                toast.success('Password reset successfully');
                 router.push('/auth/login');
             } else {
-                alert(data.error);
+                toast.error(data.error);
             }
         } catch (error) {
-            alert(error);
+            toast.error(error);
             console.error('Error resetting password:', error);
         } finally {
             setLoading(false);

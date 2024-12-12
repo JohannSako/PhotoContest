@@ -8,6 +8,7 @@ import { useState, useEffect, Suspense } from "react";
 import Loader from "@/components/loader";
 import Cookies from "js-cookie";
 import PopUp from "@/components/popUp";
+import toast from "react-hot-toast";
 
 function GameSettingsParticipants() {
     const router = useRouter();
@@ -80,13 +81,13 @@ function GameSettingsParticipants() {
             });
             const result = await response.json();
             if (response.ok) {
-                alert('Participants removed successfully');
+                toast.success('Participants removed successfully');
                 router.back();
             } else {
-                alert(result.error || 'Failed to remove participants');
+                toast.error(result.error || 'Failed to remove participants');
             }
         } catch (err) {
-            alert('Error removing participants');
+            toast.error('Error removing participants');
             console.error(err);
         } finally {
             setLoading(false);

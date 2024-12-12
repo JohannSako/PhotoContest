@@ -9,6 +9,7 @@ import Text from "@/components/text";
 import Loader from "@/components/loader";
 import Carousel from "@/components/photo/carousel";
 import Like from "@/components/photo/like";
+import toast from "react-hot-toast";
 
 export default function GameVoting({ gamemaster, theme, photos, gameId }) {
     const router = useRouter();
@@ -29,7 +30,7 @@ export default function GameVoting({ gamemaster, theme, photos, gameId }) {
                 setIsGameMaster(true);
             }
         } catch (error) {
-            alert(error);
+            toast.error(error);
             console.log('Error decoding token:', error);
         }
     }, [gamemaster]);
@@ -50,7 +51,7 @@ export default function GameVoting({ gamemaster, theme, photos, gameId }) {
                 }
             }
         } catch (error) {
-            alert(error);
+            toast.error(error);
             console.log('Error decoding token:', error);
         }
     }, [photos]);
@@ -67,15 +68,15 @@ export default function GameVoting({ gamemaster, theme, photos, gameId }) {
             });
             const result = await response.json();
             if (response.ok) {
-                alert(response.status === 200 ? 'Your vote has been saved !' : 'Your vote has been updated !');
+                toast.error(response.status === 200 ? 'Your vote has been saved !' : 'Your vote has been updated !');
                 setLikedPictureIndex(index);
                 setLike(true);
             } else {
-                alert(result.error || 'Failed to vote');
+                toast.error(result.error || 'Failed to vote');
             }
         } catch (err) {
-            alert('Error voting');
-            alert(err);
+            toast.error('Error voting');
+            toast.error(err);
             console.error(err);
         } finally {
             setLoading(false);

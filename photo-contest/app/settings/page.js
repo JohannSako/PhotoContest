@@ -8,6 +8,7 @@ import { useState } from "react";
 import PopUp from "@/components/popUp";
 import { jwtDecode } from "jwt-decode";
 import Loader from "@/components/loader";
+import toast from "react-hot-toast";
 
 export default function Settings() {
     const router = useRouter();
@@ -22,7 +23,7 @@ export default function Settings() {
     const handleDeleteAccount = async () => {
         const token = Cookies.get('token');
         if (!token) {
-            alert('You are not logged in.');
+            toast.error('You are not logged in.');
             router.push('/auth/login');
             return;
         }
@@ -41,13 +42,13 @@ export default function Settings() {
             const data = await response.json();
 
             if (response.ok) {
-                alert('Account deleted successfully.');
+                toast.success('Account deleted successfully.');
                 handleLogout();
             } else {
-                alert(data.error);
+                toast.error(data.error);
             }
         } catch (error) {
-            alert('Error deleting account');
+            toast.error('Error deleting account');
             console.error('Error:', error);
         } finally {
             setLoading(false);

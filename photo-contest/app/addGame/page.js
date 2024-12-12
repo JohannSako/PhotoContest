@@ -8,6 +8,7 @@ import CreateGame from "./create";
 import JoinGame from "./join";
 import Cookies from "js-cookie";
 import Loader from "@/components/loader";
+import toast from "react-hot-toast";
 
 export default function AddGame() {
     const router = useRouter();
@@ -31,14 +32,14 @@ export default function AddGame() {
             const data = await response.json();
 
             if (response.ok) {
-                alert('Game created successfully');
+                toast.success('Game created successfully');
                 router.back();
             } else {
-                alert(data.error);
+                toast.error(data.error);
             }
         } catch (error) {
             console.error('Error creating game:', error.message);
-            alert('Error creating game');
+            toast.error('Error creating game');
         } finally {
             setLoading(false);
         }

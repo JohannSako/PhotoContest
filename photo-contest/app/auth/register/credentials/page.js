@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Cookies from "js-cookie";
+import toast from "react-hot-toast";
 
 export default function AuthRegisterCredentials() {
     const [email, setEmail] = useState('');
@@ -24,9 +25,9 @@ export default function AuthRegisterCredentials() {
 
     const handleRegister = () => {
         if (typeof email !== 'string' || !(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)))
-            alert("Invalid email address");
+            toast.error("Invalid email address");
         else if (!(typeof password === 'string' && password.length >= 6))
-            alert("Invalid password");
+            toast.error("Invalid password");
         else
             router.push(`/auth/register/details?email=${email}&password=${password}`)
     };
