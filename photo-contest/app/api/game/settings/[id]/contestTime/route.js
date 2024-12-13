@@ -3,6 +3,11 @@ import { ObjectId } from 'mongodb';
 import jwt from 'jsonwebtoken';
 import { jwtVerify } from 'jose';
 
+function normalizeToTime(milliseconds) {
+  const date = new Date(milliseconds);
+  return date.getHours() * 60 + date.getMinutes();
+}
+
 export async function PUT(request, { params }) {
   try {
     const { id } = params;
@@ -48,13 +53,13 @@ export async function PUT(request, { params }) {
       });
     }
 
-    if (body.startUpload >= body.endUpload) {
+    if (normalizeToTime(body.startUpload) >= normalizeToTime(body.endUpload)) {
       return new Response(JSON.stringify({ error: "Ending upload can't happen before the start" }), {
         status: 404,
         headers: { 'Content-Type': 'application/json' },
       });
     }
-    else if (body.endUpload >= body.endVote) {
+    else if (normalizeToTime(body.endUpload) >= normalizeToTime(body.endVote)) {
       return new Response(JSON.stringify({ error: "Ending vote can't happen before the upload's end" }), {
         status: 404,
         headers: { 'Content-Type': 'application/json' },

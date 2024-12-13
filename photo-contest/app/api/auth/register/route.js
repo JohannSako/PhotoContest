@@ -3,15 +3,15 @@ import { ObjectId } from 'mongodb';
 import nodemailer from 'nodemailer';
 
 function isRegisterRequestBody(body) {
-  return (
-    typeof body.name === 'string' &&
-    body.name.length >= 4 &&
-    typeof body.password === 'string' &&
-    body.password.length >= 6 &&
-    typeof body.mail === 'string' &&
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.mail) &&
-    typeof body.profilePicture === 'string'
-  );
+  if (!(typeof body.name === 'string' && body.name.length >= 4))
+    return "username must be at least 4 characters long";
+  else if (!(typeof body.password === 'string' && body.password.length >= 6))
+    return "password must be at least 6 characters long";
+  else if (!(typeof body.mail === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.mail)))
+    return "mail must be mail formatted !";
+  else if (!(typeof body.profilePicture === 'string'))
+    return "you need to set a profile picture !";
+  return "";
 }
 
 export async function POST(request) {
@@ -20,8 +20,9 @@ export async function POST(request) {
     const bcrypt = require('bcrypt');
 
     console.log(body);
-    if (!isRegisterRequestBody(body)) {
-      return new Response(JSON.stringify({ error: 'Invalid input data' }), {
+    const answerRegisterRequestBody = isRegisterRequestBody(body);
+    if (answerRegisterRequestBody !== "") {
+      return new Response(JSON.stringify({ error: `Invalid input data: ${answerRegisterRequestBody}` }), {
         status: 400,
         headers: {
           'Content-Type': 'application/json',

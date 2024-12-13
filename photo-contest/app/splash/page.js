@@ -16,7 +16,7 @@ export default function SplashScreen({ finishLoading }) {
       duration: 4000,
       easing: "easeInOutExpo",
     });
-  }, []);
+  });
 
   return (
     <div className="flex w-full h-[100vh] items-center justify-center bg-primary">

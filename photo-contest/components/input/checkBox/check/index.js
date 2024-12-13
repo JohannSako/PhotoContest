@@ -7,7 +7,7 @@ export default function CheckBox({ state }) {
     if (state) {
         return (
             <div className="flex w-5 h-5 flex-shrink-0 rounded border bg-green-primary border-green-secondary justify-center">
-                <Image src={CheckIcon} />
+                <Image src={CheckIcon} alt='check-icon'/>
             </div>
         )
     }

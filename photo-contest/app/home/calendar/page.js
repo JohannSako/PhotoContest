@@ -7,8 +7,9 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Loader from "@/components/loader";
 import toast from "react-hot-toast";
 import Header from "@/components/header";
+import { Suspense } from "react";
 
-export default function HomeCalendar() {
+function HomeCalendar() {
     const [contests, setContests] = useState([]);
     const [loading, setLoading] = useState(false);
     const router = useRouter();
@@ -104,5 +105,13 @@ export default function HomeCalendar() {
                 );
             })}
         </div>
+    );
+}
+
+export default function HomeCalendarWrapper() {
+    return (
+        <Suspense fallback={<Loader />}>
+            <HomeCalendar />
+        </Suspense>
     );
 }

@@ -1,4 +1,5 @@
 import Text from "@/components/text";
+import Image from "next/image";
 import PropTypes from 'prop-types';
 
 export default function Day({ day = 1, state = 'EMPTY', image = '', onClick = undefined }) {
@@ -16,7 +17,7 @@ export default function Day({ day = 1, state = 'EMPTY', image = '', onClick = un
             onClick={isImage ? onClick : undefined}
         >
             {isImage && (
-                <img
+                <Image
                     src={image}
                     alt=""
                     className="absolute top-0 left-0 w-full h-full object-cover rounded-[10px]"
