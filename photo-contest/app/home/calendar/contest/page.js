@@ -7,8 +7,11 @@ import Carousel from "@/components/photo/carousel";
 import Text from "@/components/text";
 import Header from "@/components/header";
 import { useRouter } from "next/navigation";
+import Loader from "@/components/loader";
+import Image from "next/image";
+import { Suspense } from "react";
 
-export default function ContestHistory() {
+function ContestHistory() {
     const searchParams = useSearchParams();
     const _id = searchParams.get('_id');
     const [contest, setContest] = useState(null);
@@ -64,7 +67,7 @@ export default function ContestHistory() {
                 </div>
             </div>
             <div className="absolute w-full h-full overflow-hidden">
-                {photos.length > 0 && <img className="w-full h-full object-cover blur-[10px] opacity-30" src={photos[index].photo} alt="Background" />}
+                {photos.length > 0 && <Image className="w-full h-full object-cover blur-[10px] opacity-30" src={photos[index].photo} alt="Background" />}
             </div>
             <div className="flex flex-col h-full text-end items-center justify-center gap-4">
                 {photos.length > 0 ? <Carousel photos={photos} setIndex={setIndex} /> : (
@@ -77,3 +80,11 @@ export default function ContestHistory() {
         </div>
     );
 };
+
+export default function ContestHistoryWrapper() {
+    return (
+        <Suspense fallback={<Loader />}>
+            <ContestHistory />
+        </Suspense>
+    );
+}

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import toast from "react-hot-toast";
+import Image from 'next/image';
 
 export default function Upload({ width = 'w-[288px]', height = 'h-[494px]', border = 'rounded-none', borderColor = 'border-black', onImageChange, defaultImage = '' }) {
   const fileInputRef = useRef(null);

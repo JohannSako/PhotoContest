@@ -2,6 +2,7 @@ import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import Text from '@/components/text';
+import Image from 'next/image';
 
 export default function Carousel({ photos, setIndex }) {
   const handleSlideChange = (swiper) => {
@@ -29,7 +30,7 @@ export default function Carousel({ photos, setIndex }) {
             }}
           >
             <div className="w-full h-full overflow-hidden rounded-md">
-              <img
+              <Image
                 src={photo.photo}
                 alt={`Photo by ${photo.user.name}`}
                 className="w-full h-full object-cover"

@@ -7,6 +7,7 @@ import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
 import Text from "@/components/text";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 export default function GameBreak({ photos, theme, gamemaster, gameId }) {
     const router = useRouter();
@@ -61,7 +62,7 @@ export default function GameBreak({ photos, theme, gamemaster, gameId }) {
                     </div>
                     <div className="text-end">
                         <div className={`flex w-[70vw] h-[70vh] items-center justify-center`}>
-                            {photo ? <img src={photo.photo} alt="Selected" className={`w-full h-full object-cover rounded-md`} /> : (
+                            {photo ? <Image src={photo.photo} alt="Selected" className={`w-full h-full object-cover rounded-md`} /> : (
                                 <div className="flex w-full text-center">
                                     <Text>Believe it or not there is no winner this time :/</Text>
                                 </div>

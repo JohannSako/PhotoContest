@@ -77,7 +77,7 @@ function GameSettingsContestTime() {
             });
             const result = await response.json();
             if (response.ok) {
-                toast.error('Contest times updated successfully');
+                toast.success('Contest times updated successfully');
                 router.back();
             } else {
                 toast.error(result.error || 'Failed to update contest times');
