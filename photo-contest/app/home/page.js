@@ -32,6 +32,91 @@ export default function Home() {
     const [loading, setLoading] = useState(false);
     const [gameId, setGameId] = useState('');
 
+    const [subscribed, setSubscribed] = useState(false);
+
+    useEffect(() => {
+        if (subscribed)
+            toast.success("You can now receive notifications !");
+        else
+            toast.loading("Checking notifications..");
+    }, [subscribed])
+
+    useEffect(() => {
+        askNotificationPermission();
+        getGames();
+    }, []);
+
+    useEffect(() => {
+        binPopUp ?
+            (document.body.style.overflow = 'hidden') :
+            (document.body.style.overflow = 'auto')
+    }, [binPopUp])
+
+    async function askNotificationPermission() {
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+            toast.dismiss();
+            toast.error("You navigator does not support push notifications.");
+            return;
+        }
+
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') {
+            await saveSubscriptionToDB(null);
+            return;
+        }
+
+        const reg = await navigator.serviceWorker.ready;
+        const existingSub = await reg.pushManager.getSubscription();
+
+        if (!existingSub) {
+            const subscribeOptions = {
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY)
+            };
+            const newSub = await reg.pushManager.subscribe(subscribeOptions);
+
+            await saveSubscriptionToDB(newSub);
+            setSubscribed(true);
+        } else {
+            await saveSubscriptionToDB(existingSub);
+            setSubscribed(true);
+        }
+    }
+
+    async function saveSubscriptionToDB(subscription) {
+        const token = Cookies.get('token');
+        if (!token) return;
+
+        const res = await fetch('/api/notification/save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ subscription })
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+            toast.dismiss();
+            toast.error(data.error || 'Error while saving subscription.');
+        } else {
+            toast.dismiss();
+            toast.success('Notification preferences updated !');
+        }
+    }
+
+    function urlBase64ToUint8Array(base64String) {
+        const padding = '='.repeat((4 - base64String.length % 4) % 4);
+        const base64 = (base64String + padding)
+            .replace(/\-/g, '+')
+            .replace(/_/g, '/');
+        const rawData = atob(base64);
+        const outputArray = new Uint8Array(rawData.length);
+
+        for (let i = 0; i < rawData.length; ++i) {
+            outputArray[i] = rawData.charCodeAt(i);
+        }
+        return outputArray;
+    }
+
     const getGames = async () => {
         try {
             setLoading(true);
@@ -54,16 +139,6 @@ export default function Home() {
             setLoading(false);
         }
     }
-
-    useEffect(() => {
-        getGames();
-    }, []);
-
-    useEffect(() => {
-        binPopUp ?
-            (document.body.style.overflow = 'hidden') :
-            (document.body.style.overflow = 'auto')
-    }, [binPopUp])
 
     const handleInput = (e) => {
         setInput(e.target.value);
