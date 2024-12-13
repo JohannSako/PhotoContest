@@ -36,20 +36,16 @@ export default function Home() {
     const [showNotificationPopup, setShowNotificationPopup] = useState(false);
     const [isRequestingPermission, setIsRequestingPermission] = useState(false);
 
-    useEffect(() => {        
+    useEffect(() => {
         getGames();
 
         if ('Notification' in window) {
             if (Notification.permission === 'default') {
-                // L'utilisateur n'a pas choisi, on affiche le popup.
                 setShowNotificationPopup(true);
             } else if (Notification.permission === 'granted') {
-                // L'utilisateur a déjà accepté avant, on tente de s'abonner.
-                // On affiche un toast de chargement pendant la demande.
                 handleStartSubscriptionProcess();
                 askNotificationPermission();
             } else {
-                // L'utilisateur a déjà refusé.
                 saveSubscriptionToDB(null).then(() => {
                     toast.error("You have previously denied notifications. Update this in your browser settings if you change your mind.");
                 });
@@ -90,39 +86,52 @@ export default function Home() {
             return;
         }
 
-        const reg = await navigator.serviceWorker.ready;
-        const existingSub = await reg.pushManager.getSubscription();
+        toast.success("here we are");
 
-        try {
-            if (!existingSub) {
-                const subscribeOptions = {
-                    userVisibleOnly: true,
-                    applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY)
-                };
-                const newSub = await reg.pushManager.subscribe(subscribeOptions);
+        navigator.serviceWorker.ready.then((registration) => {
+            toast.success(`A service worker is active: ${registration.active}`);
+        }, (err) => {
+            toast.error(`A service worker is not active: ${err.message}`);
+        });
+        toast.success("and now here1");
+        // const existingSub = await reg.pushManager.getSubscription();
 
-                await saveSubscriptionToDB(newSub);
-                setSubscribed(true);
-                handleEndSubscriptionProcess();
-                toast.success("You can now receive notifications!");
-            } else {
-                await saveSubscriptionToDB(existingSub);
-                setSubscribed(true);
-                handleEndSubscriptionProcess();
-                toast.success("Notification preferences updated!");
-            }
-        } catch (error) {
-            console.error("Error during subscription:", error);
-            handleEndSubscriptionProcess();
-            toast.error("An error occurred while enabling notifications.");
-        }
+        // toast.success("and now here");
+        // try {
+        //     if (!existingSub) {
+        //         toast.success("no existing sub");
+        //         const subscribeOptions = {
+        //             userVisibleOnly: true,
+        //             applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY)
+        //         };
+        //         toast.success("before newsub");
+        //         const newSub = await reg.pushManager.subscribe(subscribeOptions);
+
+        //         toast.success("before savesubtodb");
+        //         await saveSubscriptionToDB(newSub);
+        //         setSubscribed(true);
+        //         handleEndSubscriptionProcess();
+        //         toast.success("You can now receive notifications!");
+        //     } else {
+        //         toast.success("a sub exist");
+        //         await saveSubscriptionToDB(existingSub);
+        //         setSubscribed(true);
+        //         handleEndSubscriptionProcess();
+        //         toast.success("Notification preferences updated!");
+        //     }
+        // } catch (error) {
+        //     toast.success("there is clearly an error");
+        //     console.error("Error during subscription:", error);
+        //     handleEndSubscriptionProcess();
+        //     toast.error("An error occurred while enabling notifications.");
+        // }
     }
 
     async function saveSubscriptionToDB(subscription) {
         const token = Cookies.get('token');
         if (!token) {
             console.warn("No token found. Cannot save subscription.");
-            return; // L'utilisateur n'est peut-être pas loggé, on ne fait rien.
+            return;
         }
 
         try {
@@ -137,7 +146,7 @@ export default function Home() {
                 console.error("Error saving subscription:", data.error);
                 toast.error(data.error || 'Error while saving subscription.');
             } else {
-                // Pas de toast ici, on laisse la fonction appelante gérer.
+
             }
         } catch (err) {
             console.error("Error in saveSubscriptionToDB:", err);
