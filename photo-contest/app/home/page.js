@@ -34,16 +34,35 @@ export default function Home() {
 
     const [subscribed, setSubscribed] = useState(false);
 
-    useEffect(() => {
-        if (subscribed)
-            toast.success("You can now receive notifications !");
-        else
-            toast.loading("Checking notifications..");
-    }, [subscribed])
+    const [showNotificationPopup, setShowNotificationPopup] = useState(false);
 
     useEffect(() => {
-        askNotificationPermission();
+        if (subscribed) {
+            toast.dismiss();
+            toast.success("You can now receive notifications !");
+        } else {
+            toast.loading("Checking notifications..");
+        }
+    }, [subscribed])
+
+    useEffect(() => {        
         getGames();
+
+        if ('Notification' in window) {
+            if (Notification.permission === 'default') {
+                toast.dismiss();
+                setShowNotificationPopup(true);
+            } else if (Notification.permission === 'granted') {
+                askNotificationPermission();
+            } else {
+                saveSubscriptionToDB(null);
+                toast.dismiss();
+                toast.error("You have previously denied notifications. You can update this in your browser settings.");
+            }
+        } else {
+            toast.dismiss();
+            toast.error("Your navigator does not support push notifications.");
+        }
     }, []);
 
     useEffect(() => {
@@ -55,7 +74,7 @@ export default function Home() {
     async function askNotificationPermission() {
         if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
             toast.dismiss();
-            toast.error("You navigator does not support push notifications.");
+            toast.error("Your navigator does not support push notifications.");
             return;
         }
 
@@ -203,6 +222,16 @@ export default function Home() {
         }
     }
 
+    const handleAcceptNotifications = async () => {
+        setShowNotificationPopup(false);
+        await askNotificationPermission();
+    }
+
+    const handleDeclineNotifications = async () => {
+        setShowNotificationPopup(false);
+        await saveSubscriptionToDB(null);
+    }
+
     return (
         <div className="flex gap-8 items-center flex-col p-4">
             {loading && <Loader />}
@@ -240,6 +269,20 @@ export default function Home() {
                     type="delete"
                 />
             </div>}
+
+            {showNotificationPopup && (
+                <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50">
+                    <PopUp
+                        title="Enable Notifications?"
+                        content="Would you like to receive notifications for upcoming contests, reminders, and updates? This will help you stay informed about the latest events."
+                        firstTextButton="Accept"
+                        firstButton={handleAcceptNotifications}
+                        secondTextButton="No, thanks"
+                        secondButton={handleDeclineNotifications}
+                        type="primary"
+                    />
+                </div>
+            )}
         </div>
     )
 }
