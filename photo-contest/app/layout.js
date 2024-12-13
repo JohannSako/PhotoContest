@@ -4,7 +4,7 @@ import MainLayout from '@/components/layout/main';
 
 export const metadata = {
   title: 'PhotoContest',
-  description: 'Snap, Share, Succeed',
+  description: 'Snap, Share, Succeed'
 };
 
 export default function RootLayout({ children }) {

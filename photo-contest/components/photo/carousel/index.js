@@ -30,7 +30,7 @@ export default function Carousel({ photos, setIndex }) {
             }}
           >
             <div className="w-full h-full overflow-hidden rounded-md">
-              <Image
+              <img
                 src={photo.photo}
                 alt={`Photo by ${photo.user.name}`}
                 className="w-full h-full object-cover"

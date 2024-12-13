@@ -23,6 +23,7 @@ function ContestHistory() {
 
     useEffect(() => {
         async function fetchContest() {
+            setLoading(true);
             try {
                 const response = await fetch(`/api/contest/${_id}`);
                 const result = await response.json();
@@ -67,12 +68,12 @@ function ContestHistory() {
                 </div>
             </div>
             <div className="absolute w-full h-full overflow-hidden">
-                {photos.length > 0 && <Image className="w-full h-full object-cover blur-[10px] opacity-30" src={photos[index].photo} alt="Background" />}
+                {photos.length > 0 && <img className="w-full h-full object-cover blur-[10px] opacity-30" src={photos[index].photo} alt="Background" />}
             </div>
             <div className="flex flex-col h-full text-end items-center justify-center gap-4">
                 {photos.length > 0 ? <Carousel photos={photos} setIndex={setIndex} /> : (
                     <div className="flex text-center">
-                        <Text color="white">Well looks like no one felt like posting pictures this day..</Text>
+                        {!loading && <Text color="white">Well looks like no one felt like posting pictures this day..</Text>}
                     </div>
                 )}
                 {photos.length > 0 && <Text color="white">{photos[index].user.name}</Text>}

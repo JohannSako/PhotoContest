@@ -17,7 +17,7 @@ export default function Day({ day = 1, state = 'EMPTY', image = '', onClick = un
             onClick={isImage ? onClick : undefined}
         >
             {isImage && (
-                <Image
+                <img
                     src={image}
                     alt=""
                     className="absolute top-0 left-0 w-full h-full object-cover rounded-[10px]"
