@@ -63,7 +63,7 @@ export default function Month({ monthNb, year, contests, handleClick }) {
           const contest = contestsByDay[day];
           let state = contest && contest.photo ? 'IMAGE' : 'EMPTY';
           if (isItToday(day))
-            state += 'TODAY';
+            state = 'TODAY';
           const image = (contest && contest.photo) ? contest.photo.photo : '';
 
           const checkClick = () => {

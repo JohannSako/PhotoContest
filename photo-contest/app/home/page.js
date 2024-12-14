@@ -32,27 +32,8 @@ export default function Home() {
     const [loading, setLoading] = useState(false);
     const [gameId, setGameId] = useState('');
 
-    const [subscribed, setSubscribed] = useState(false);
-    const [showNotificationPopup, setShowNotificationPopup] = useState(false);
-    const [isRequestingPermission, setIsRequestingPermission] = useState(false);
-
     useEffect(() => {
         getGames();
-
-        if ('Notification' in window) {
-            if (Notification.permission === 'default') {
-                setShowNotificationPopup(true);
-            } else if (Notification.permission === 'granted') {
-                handleStartSubscriptionProcess();
-                askNotificationPermission();
-            } else {
-                saveSubscriptionToDB(null).then(() => {
-                    toast.error("You have previously denied notifications. Update this in your browser settings if you change your mind.");
-                });
-            }
-        } else {
-            toast.error("Your navigator does not support push notifications.");
-        }
     }, []);
 
     useEffect(() => {
@@ -60,113 +41,6 @@ export default function Home() {
             ? (document.body.style.overflow = 'hidden')
             : (document.body.style.overflow = 'auto');
     }, [binPopUp]);
-
-    function handleStartSubscriptionProcess() {
-        setIsRequestingPermission(true);
-        toast.loading("Checking notifications...");
-    }
-
-    function handleEndSubscriptionProcess() {
-        setIsRequestingPermission(false);
-        toast.dismiss();
-    }
-
-    async function askNotificationPermission() {
-        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-            handleEndSubscriptionProcess();
-            toast.error("Your navigator does not support push notifications.");
-            return;
-        }
-
-        const permission = await Notification.requestPermission();
-        if (permission !== 'granted') {
-            await saveSubscriptionToDB(null);
-            handleEndSubscriptionProcess();
-            toast.error("Notification permission denied.");
-            return;
-        }
-
-        toast.success("here we are");
-
-        navigator.serviceWorker.ready.then((registration) => {
-            toast.success(`A service worker is active: ${registration.active}`);
-        }, (err) => {
-            toast.error(`A service worker is not active: ${err.message}`);
-        });
-        toast.success("and now here1");
-        // const existingSub = await reg.pushManager.getSubscription();
-
-        // toast.success("and now here");
-        // try {
-        //     if (!existingSub) {
-        //         toast.success("no existing sub");
-        //         const subscribeOptions = {
-        //             userVisibleOnly: true,
-        //             applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY)
-        //         };
-        //         toast.success("before newsub");
-        //         const newSub = await reg.pushManager.subscribe(subscribeOptions);
-
-        //         toast.success("before savesubtodb");
-        //         await saveSubscriptionToDB(newSub);
-        //         setSubscribed(true);
-        //         handleEndSubscriptionProcess();
-        //         toast.success("You can now receive notifications!");
-        //     } else {
-        //         toast.success("a sub exist");
-        //         await saveSubscriptionToDB(existingSub);
-        //         setSubscribed(true);
-        //         handleEndSubscriptionProcess();
-        //         toast.success("Notification preferences updated!");
-        //     }
-        // } catch (error) {
-        //     toast.success("there is clearly an error");
-        //     console.error("Error during subscription:", error);
-        //     handleEndSubscriptionProcess();
-        //     toast.error("An error occurred while enabling notifications.");
-        // }
-    }
-
-    async function saveSubscriptionToDB(subscription) {
-        const token = Cookies.get('token');
-        if (!token) {
-            console.warn("No token found. Cannot save subscription.");
-            return;
-        }
-
-        try {
-            const res = await fetch('/api/notification/save', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                body: JSON.stringify({ subscription })
-            });
-
-            const data = await res.json();
-            if (!res.ok) {
-                console.error("Error saving subscription:", data.error);
-                toast.error(data.error || 'Error while saving subscription.');
-            } else {
-
-            }
-        } catch (err) {
-            console.error("Error in saveSubscriptionToDB:", err);
-            toast.error("Network error while saving subscription.");
-        }
-    }
-
-    function urlBase64ToUint8Array(base64String) {
-        const padding = '='.repeat((4 - base64String.length % 4) % 4);
-        const base64 = (base64String + padding)
-            .replace(/\-/g, '+')
-            .replace(/_/g, '/');
-        const rawData = atob(base64);
-        const outputArray = new Uint8Array(rawData.length);
-
-        for (let i = 0; i < rawData.length; ++i) {
-            outputArray[i] = rawData.charCodeAt(i);
-        }
-        return outputArray;
-    }
 
     const getGames = async () => {
         try {
@@ -254,20 +128,6 @@ export default function Home() {
         }
     }
 
-    const handleAcceptNotifications = async () => {
-        setShowNotificationPopup(false);
-        handleStartSubscriptionProcess();
-        await askNotificationPermission();
-    }
-
-    const handleDeclineNotifications = async () => {
-        setShowNotificationPopup(false);
-        handleStartSubscriptionProcess();
-        await saveSubscriptionToDB(null);
-        handleEndSubscriptionProcess();
-        toast.error("You decided not to enable notifications.");
-    }
-
     return (
         <div className="flex gap-8 items-center flex-col p-4">
             {loading && <Loader />}
@@ -305,20 +165,6 @@ export default function Home() {
                     type="delete"
                 />
             </div>}
-
-            {showNotificationPopup && (
-                <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50">
-                    <PopUp
-                        title="Enable Notifications?"
-                        content="Would you like to receive notifications for upcoming contests, reminders, and updates? This will help you stay informed about the latest events."
-                        firstTextButton="Accept"
-                        firstButton={handleAcceptNotifications}
-                        secondTextButton="No, thanks"
-                        secondButton={handleDeclineNotifications}
-                        type="primary"
-                    />
-                </div>
-            )}
         </div>
     )
 }

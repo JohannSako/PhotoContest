@@ -1,7 +1,6 @@
 import ClientToastProvider from '@/components/toast';
 import './globals.css';
 import MainLayout from '@/components/layout/main';
-import ServiceWorkerRegistration from '@/components/serviceWorker';
 
 export const metadata = {
   title: 'PhotoContest',
@@ -23,7 +22,6 @@ export default function RootLayout({ children }) {
           {children}
         </MainLayout>
         <ClientToastProvider />
-        <ServiceWorkerRegistration />
       </body>
     </html>
   );
