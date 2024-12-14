@@ -91,9 +91,11 @@ function HomeCalendar() {
             <Header
                 title="Calendar"
                 left="Back"
+                right="Ranking"
                 mainColor="white"
                 buttonColor="white"
                 leftFunction={() => router.back()}
+                rightFunction={() => router.push(`/home/calendar/ranking?_id=${_id}`)}
             />
             {sortedKeys.map(key => {
                 const [year, month] = key.split('-').map(Number);
