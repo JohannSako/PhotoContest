@@ -63,15 +63,24 @@ export async function POST(request) {
       },
     });
 
-    const mailOptions = {
+    const mailOptions = (username) => ({
       from: process.env.EMAIL_USER,
       to: mail,
       subject: 'Password Reset Code',
-      text: `Your password reset code is: ${resetCode}`,
-      html: `<p>Your password reset code is: <strong>${resetCode}</strong></p>`,
-    };
+      html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+          <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+          <h2 style="color: #4CAF50;">Here your password reset code!</h2>
+          <p>Hi ${username},</p>
+          <p>Your password reset code is: <strong>${resetCode}</strong></p>
+          <p>Best regards,<br/>
+          <strong>The Photo Contest Team</strong></p>
+          </div>
+      </div>
+      `,
+    });
 
-    await transporter.sendMail(mailOptions);
+    await transporter.sendMail(mailOptions(user.name));
 
     return new Response(JSON.stringify({ message: 'Password reset code sent' }), {
       status: 200,

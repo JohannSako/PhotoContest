@@ -36,7 +36,7 @@ async function createContest(game, db) {
 
   userIds.push(game.gamemaster)
 
-  contactParticipants(userIds, { title: `A new Contest started in ${game.title} !`, content: `Hey !\nA new contest just started, join ${game.title} right now to see today's theme !` }).then(
+  contactParticipants(userIds, { title: `${game.title}: A new Contest started !`, content: `Hey !\nA new contest just started, join ${game.title} right now to see today's theme !` }).then(
     response => console.log(response.message)
   ).catch(
     err => console.error(err)

@@ -65,16 +65,25 @@ export async function contactParticipants(userIds, { title, content }) {
             },
         });
 
-        const mailOptions = (mail) => ({
+        const mailOptions = (mail, username) => ({
             from: process.env.EMAIL_USER,
             to: mail,
             subject: title,
-            text: content,
-            html: `<p>${content}</p>`,
+            html: `
+            <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+                <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+                <h2 style="color: #4CAF50;">News on a contest!</h2>
+                <p>Hi ${username},</p>
+                <p>${content}</p>
+                <p>Best regards,<br/>
+                <strong>The Photo Contest Team</strong></p>
+                </div>
+            </div>
+            `,
         });
 
         for (const user of users) {
-            await transporter.sendMail(mailOptions(user.mail));
+            await transporter.sendMail(mailOptions(user.mail, user.name));
         }
 
         return { message: 'Emails sent successfully' };
@@ -112,7 +121,7 @@ export async function POST(request) {
         const contestCollection = db.collection('contest');
         await contestCollection.insertOne(newContest);
 
-        contactParticipants(body.participants, { title: `A new Contest started in ${body.title} !`, content: `Hey !\nA new contest just started, join ${body.title} right now to see today's theme !` }).then(
+        contactParticipants(body.participants, { title: `${body.title}: A new Contest started !`, content: `Hey !\nA new contest just started, join ${body.title} right now to see today's theme !` }).then(
             response => console.log(response.message)
         ).catch(
             err => console.error(err)
