@@ -89,7 +89,7 @@ export default function GameVoting({ gamemaster, theme, photos, gameId }) {
             setLike(false);
         else if (!like && index == likedPictureIndex)
             setLike(true);
-    }, [index, like, likedPictureIndex])
+    }, [index])
 
     const handleLike = (state) => {
         setLike(state);
@@ -121,9 +121,9 @@ export default function GameVoting({ gamemaster, theme, photos, gameId }) {
                 </div>
             </div>
             <div className="absolute w-full h-full overflow-hidden">
-                {photos.length > 0 && <Image className="w-full h-full object-cover blur-[10px] opacity-30" src={photos[index].photo} alt="Background" />}
+                {photos.length > 0 && <img className="w-full h-full object-cover blur-[10px] opacity-30" src={photos[index].photo} alt="Background" />}
             </div>
-            <div className="flex flex-col h-full text-end items-center justify-center gap-4">
+            <div className="flex flex-col h-full text-end items-center justify-center gap-4 z-10">
                 {photos.length > 0 ? <Carousel photos={photos} setIndex={setIndex} /> : (
                     <div className="flex text-center">
                         <Text color="white">Well looks like no one felt like posting pictures today.. See you tomorrow :)</Text>

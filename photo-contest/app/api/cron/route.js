@@ -43,7 +43,7 @@ async function updateContestState() {
             );
 
             await contactParticipants(game.participants.concat(game.gamemaster), {
-                title: 'Contest Voting Started',
+                title: `${game.title}: Contest Voting Started`,
                 content: 'The contest voting period has started. Please vote for your favorite photos.'
             });
         } else if (contest.state === 'VOTING' && (now >= endVoteTime || (game.whenPlayersVoted && await allParticipantsVoted(game)))) {
@@ -54,7 +54,7 @@ async function updateContestState() {
             );
 
             await contactParticipants(game.participants.concat(game.gamemaster), {
-                title: 'Contest Voting Ended',
+                title: `${game.title}: Contest Voting Ended`,
                 content: 'The contest voting period has ended. Please check the results.'
             });
         } else if (contest.state === 'BREAK' && now >= startUploadTime && now <= endUploadTime) {
@@ -104,7 +104,7 @@ async function createNewContest(game, db) {
     const userIds = game.participants.concat(game.gamemaster);
 
     await contactParticipants(userIds, {
-        title: `A new Contest started in ${game.title} !`,
+        title: `${game.title}: A new Contest started !`,
         content: `Hey !\nA new contest just started, join ${game.title} right now to see today's theme !`
     });
 
