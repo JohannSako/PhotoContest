@@ -50,7 +50,7 @@ async function createContest(game, db) {
     content: locale.includes('fr') ?
       `Salut !\nUn nouveau concours vient de commencer, rejoignez ${game.title} dès maintenant pour voir le thème d'aujourd'hui !` :
       `Hey !\nA new contest just started, join ${game.title} right now to see today's theme !`
-  }).then(
+  }, locale).then(
     response => console.log(response.message)
   ).catch(
     err => console.error(err)

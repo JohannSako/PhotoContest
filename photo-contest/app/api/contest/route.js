@@ -43,12 +43,13 @@ export async function getRandomTheme(categories, history, db) {
     return { theme, categoryId };
 }
 
-export async function contactParticipants(userIds, { title, content }) {
+export async function contactParticipants(userIds, { title, content }, locale = 'en') {
     try {
         const client = await clientPromise;
         const db = client.db('main');
         const userCollection = db.collection('userdata');
 
+        console.log(locale);
         const users = await userCollection.find({ _id: { $in: userIds.map(id => new ObjectId(id)) } }).toArray();
 
         if (users.length === 0) {
@@ -73,7 +74,7 @@ export async function contactParticipants(userIds, { title, content }) {
             html: `
             <div style="font-family: Arial, sans-serif; line-height: 1.6;">
                 <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
-                <h2 style="color: #4CAF50;">News on a contest!</h2>
+                <h2 style="color: #4CAF50;">${locale === 'fr' ? "Nouveauté dans un concours !" : "News on a contest !"}</h2>
                 <p>Hi ${username},</p>
                 <p>${content}</p>
                 <p>Best regards,<br/>
@@ -133,7 +134,7 @@ export async function POST(request) {
             content: locale.includes('fr') ?
                 `Salut !\nUn nouveau concours vient de commencer, rejoignez ${game.title} dès maintenant pour voir le thème d'aujourd'hui !` :
                 `Hey !\nA new contest just started, join ${game.title} right now to see today's theme !`
-        }).then(
+        }, locale).then(
             response => console.log(response.message)
         ).catch(
             err => console.error(err)
