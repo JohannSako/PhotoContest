@@ -12,8 +12,10 @@ export default function HomePage() {
 
   const finishLoading = () => {
     setLoading(false);
-    const token = Cookies.get('token');
-    router.push('/home');
+    const seenOnboard = localStorage.getItem('seenOnBoard');
+
+    console.log("test");
+    router.push(seenOnboard ? '/home' : '/onboard');
   };
 
   useEffect(() => {
