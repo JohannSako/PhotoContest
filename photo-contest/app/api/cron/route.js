@@ -49,9 +49,9 @@ async function updateContestState() {
             );
 
             await contactParticipants(game.participants.concat(game.gamemaster), {
-                title: `${game.title}: ` + isFrench ?
+                title: `${game.title}: ` + (isFrench ?
                     "Vote du concours commencé" :
-                    "Contest Voting Started",
+                    "Contest Voting Started"),
                 content: isFrench ?
                     `La période de vote du concours a commencé. Veuillez voter pour vos photos préférées.` :
                     `The contest voting period has started. Please vote for your favorite photos.`
@@ -63,9 +63,9 @@ async function updateContestState() {
             );
 
             await contactParticipants(game.participants.concat(game.gamemaster), {
-                title: `${game.title}: ` + isFrench ?
+                title: `${game.title}: ` + (isFrench ?
                     "Vote du concours terminé" :
-                    "Contest Voting Ended",
+                    "Contest Voting Ended"),
                 content: isFrench ?
                     `La période de vote du concours est terminée. Veuillez vérifier les résultats.` :
                     `The contest voting period has ended. Please check the results.`
@@ -122,9 +122,9 @@ async function createNewContest(game, db) {
     const userIds = game.participants.concat(game.gamemaster);
 
     await contactParticipants(userIds, {
-        title: `${game.title}: ` + isFrench ?
+        title: `${game.title}: ` + (isFrench ?
             "Un nouveau concours a commencé !" :
-            "A new Contest started !",
+            "A new Contest started !"),
         content: isFrench ?
             `Salut !\nUn nouveau concours vient de commencer, rejoignez ${game.title} dès maintenant pour voir le thème d'aujourd'hui !` :
             `Hey !\nA new contest just started, join ${game.title} right now to see today's theme !`
