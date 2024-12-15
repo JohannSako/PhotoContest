@@ -12,16 +12,11 @@ export async function GET(request, { params }) {
       });
     }
 
-    console.log("A");
     const client = await clientPromise;
-    console.log("B");
     const db = client.db('main');
-    console.log("C");
     const photoCollection = db.collection('photo');
-    console.log("D");
 
     const photo = await photoCollection.findOne({ _id: new ObjectId(id) });
-    console.log("E");
 
     if (!photo) {
       return new Response('Photo not found', {
@@ -30,15 +25,10 @@ export async function GET(request, { params }) {
       });
     }
 
-    console.log("F");
-    // Extract the photo data (base64-encoded string)
-    const base64Photo = photo.photo;
-
-    console.log("G");
-    // Decode the base64 string
+    const base64Photo = photo.photo.startsWith('http') ? photo.photo : decrypt(Buffer.from(photo.photo, 'base64'));
+    
     const binaryPhoto = Buffer.from(base64Photo.split(',')[1], 'base64');
 
-    console.log("H");
     return new Response(binaryPhoto, {
       status: 200,
       headers: {

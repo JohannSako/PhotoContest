@@ -34,7 +34,7 @@ function Ranking() {
                 const data = await response.json();
                 setParticipants(data.users);
             } catch (err) {
-                toast.error('Impossible de récupérer le classement, veuillez réessayer');
+                toast.error('Can\t find ranking, try again later');
                 console.error(err);
             } finally {
                 setLoading(false);
@@ -49,7 +49,7 @@ function Ranking() {
     }
 
     if (participants.length === 0) {
-        return <div className="text-center mt-8">Aucun participant trouvé.</div>;
+        return <div className="text-center mt-8">No participants found or no ranking available for now.</div>;
     }
 
     return (

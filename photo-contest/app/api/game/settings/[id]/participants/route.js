@@ -2,6 +2,7 @@ import clientPromise from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import jwt from 'jsonwebtoken';
 import { jwtVerify } from 'jose';
+import { decrypt } from '@/lib/crypto';
 
 export async function PUT(request, { params }) {
   try {
@@ -74,42 +75,46 @@ export async function PUT(request, { params }) {
 }
 
 export async function GET(request, { params }) {
-    try {
-        const { id } = params;
+  try {
+    const { id } = params;
 
-        const client = await clientPromise;
-        const db = client.db('main');
-        const gameCollection = db.collection('game');
+    const client = await clientPromise;
+    const db = client.db('main');
+    const gameCollection = db.collection('game');
 
-        const game = await gameCollection.findOne({ _id: new ObjectId(id) });
-        if (!game) {
-            return new Response(JSON.stringify({ error: 'Game not found' }), {
-                status: 404,
-                headers: { 'Content-Type': 'application/json' },
-            });
-        }
-       
-        const { gamemaster } = game;
-        
-        const userCollection = db.collection('userdata');
-
-        const users = await userCollection.find({ _id: { $in: game.participants.map(id => new ObjectId(id)) } }).toArray();
-        if (!users || users.length == 0) {
-          return new Response(JSON.stringify({ error: 'No users found' }), {
-              status: 404,
-              headers: { 'Content-Type': 'application/json' },
-          });
-      }
-
-        return new Response(JSON.stringify({ users, gamemaster }), {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' },
-        });
-    } catch (error) {
-        console.error('Error fetching contest:', error.message);
-        return new Response(JSON.stringify({ error: 'Error fetching contest' }), {
-            status: 500,
-            headers: { 'Content-Type': 'application/json' },
-        });
+    const game = await gameCollection.findOne({ _id: new ObjectId(id) });
+    if (!game) {
+      return new Response(JSON.stringify({ error: 'Game not found' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
+
+    const { gamemaster } = game;
+
+    const userCollection = db.collection('userdata');
+
+    const users = await userCollection.find({ _id: { $in: game.participants.map(id => new ObjectId(id)) } }).toArray();
+    if (!users || users.length == 0) {
+      return new Response(JSON.stringify({ error: 'No users found' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    for (let user of users) {
+      user.profilePicture = user.profilePicture.startsWith('http') ? user.profilePicture : decrypt(Buffer.from(user.profilePicture, 'base64'));
+    }
+
+    return new Response(JSON.stringify({ users, gamemaster }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    console.error('Error fetching contest:', error.message);
+    return new Response(JSON.stringify({ error: 'Error fetching contest' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
 }

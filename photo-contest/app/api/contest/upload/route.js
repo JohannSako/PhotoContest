@@ -2,6 +2,7 @@ import clientPromise from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import jwt from 'jsonwebtoken';
 import { jwtVerify } from 'jose';
+import { encrypt } from '@/lib/crypto';
 
 async function authenticateToken(request) {
   const authHeader = request.headers.get('authorization');
@@ -52,7 +53,7 @@ export async function POST(request) {
 
     const newPhoto = {
       _id: new ObjectId(),
-      photo: photo,
+      photo: encrypt(photo).toString('base64'),
       date: Date.now(),
       votes: [],
       contest_id: new ObjectId(contestId),
