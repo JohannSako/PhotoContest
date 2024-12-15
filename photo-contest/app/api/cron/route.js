@@ -2,7 +2,7 @@ import clientPromise from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { contactParticipants } from '../contest/route';
 import { getRandomTheme } from '../contest/route';
-import { useTranslation } from '@/context/TranslationContext';
+import { headers, cookies } from 'next/headers';
 
 function normalizeToTime(milliseconds) {
     const date = new Date(milliseconds);
@@ -21,6 +21,10 @@ async function updateContestState() {
     const db = client.db('main');
     const gameCollection = db.collection('game');
     const contestCollection = db.collection('contest');
+
+    const headersList = headers();
+    const defaultLocale = headersList.get("accept-language");
+    const locale = cookies().get("NEXT_LOCALE")?.value || defaultLocale || "en";
 
     const now = normalizeToTime(Date.now());
 
@@ -44,8 +48,12 @@ async function updateContestState() {
             );
 
             await contactParticipants(game.participants.concat(game.gamemaster), {
-                title: `${game.title}: Contest Voting Started`,
-                content: 'The contest voting period has started. Please vote for your favorite photos.'
+                title: `${game.title}: ` + locale.includes('fr') ?
+                    "Vote du concours commencé" :
+                    "Contest Voting Started",
+                content: locale.includes('fr') ?
+                    `La période de vote du concours a commencé. Veuillez voter pour vos photos préférées.` :
+                    `The contest voting period has started. Please vote for your favorite photos.`
             });
         } else if (contest.state === 'VOTING' && ((game.whenPlayersVoted && await allParticipantsVoted(game)) || (!game.whenPlayersVoted && now >= endVoteTime))) {
             await contestCollection.updateOne(
@@ -54,8 +62,12 @@ async function updateContestState() {
             );
 
             await contactParticipants(game.participants.concat(game.gamemaster), {
-                title: `${game.title}: Contest Voting Ended`,
-                content: 'The contest voting period has ended. Please check the results.'
+                title: `${game.title}: ` + locale.includes('fr') ?
+                    "Vote du concours terminé" :
+                    "Contest Voting Ended",
+                content: locale.includes('fr') ?
+                    `La période de vote du concours est terminée. Veuillez vérifier les résultats.` :
+                    `The contest voting period has ended. Please check the results.`
             });
         } else if (contest.state === 'BREAK' && now >= startUploadTime && now <= endUploadTime) {
             const newContestId = await createNewContest(game, db);
@@ -88,6 +100,10 @@ async function createNewContest(game, db) {
     const categories = game.categories;
     const history = game.history;
 
+    const headersList = headers();
+    const defaultLocale = headersList.get("accept-language");
+    const locale = cookies().get("NEXT_LOCALE")?.value || defaultLocale || "en";
+
     const { theme, categoryId } = await getRandomTheme(categories, history, db);
 
     const newContest = {
@@ -104,8 +120,12 @@ async function createNewContest(game, db) {
     const userIds = game.participants.concat(game.gamemaster);
 
     await contactParticipants(userIds, {
-        title: `${game.title}: A new Contest started !`,
-        content: `Hey !\nA new contest just started, join ${game.title} right now to see today's theme !`
+        title: `${game.title}: ` + locale.includes('fr') ?
+            "Un nouveau concours a commencé !" :
+            "A new Contest started !",
+        content: locale.includes('fr') ?
+            `Salut !\nUn nouveau concours vient de commencer, rejoignez ${game.title} dès maintenant pour voir le thème d'aujourd'hui !` :
+            `Hey !\nA new contest just started, join ${game.title} right now to see today's theme !`
     });
 
     return result.insertedId;

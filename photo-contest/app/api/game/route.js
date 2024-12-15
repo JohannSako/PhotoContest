@@ -3,6 +3,7 @@ import { ObjectId } from 'mongodb';
 import { getRandomTheme, contactParticipants } from '../contest/route';
 import { user } from '@nextui-org/react';
 import { jwtVerify } from 'jose';
+import { headers, cookies } from 'next/headers';
 
 function isGameRequestBody(body) {
   return (
@@ -18,6 +19,12 @@ function generateCode() {
 async function createContest(game, db) {
   const categories = game.categories;
   const history = game.history;
+
+  const headersList = headers();
+  const defaultLocale = headersList.get("accept-language");
+  const locale = cookies().get("NEXT_LOCALE")?.value || defaultLocale || "en";
+
+  console.log(locale);
 
   const { theme, categoryId } = await getRandomTheme(categories, history, db);
 
@@ -36,7 +43,14 @@ async function createContest(game, db) {
 
   userIds.push(game.gamemaster)
 
-  contactParticipants(userIds, { title: `${game.title}: A new Contest started !`, content: `Hey !\nA new contest just started, join ${game.title} right now to see today's theme !` }).then(
+  contactParticipants(userIds, {
+    title: `${game.title}: ` + locale.includes('fr') ?
+      "Un nouveau concours a commencé !" :
+      "A new Contest started !",
+    content: locale.includes('fr') ?
+      `Salut !\nUn nouveau concours vient de commencer, rejoignez ${game.title} dès maintenant pour voir le thème d'aujourd'hui !` :
+      `Hey !\nA new contest just started, join ${game.title} right now to see today's theme !`
+  }).then(
     response => console.log(response.message)
   ).catch(
     err => console.error(err)

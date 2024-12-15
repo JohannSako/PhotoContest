@@ -1,6 +1,7 @@
 import clientPromise from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import nodemailer from 'nodemailer';
+import { headers, cookies } from 'next/headers';
 
 function getRandomElement(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
@@ -97,6 +98,10 @@ export async function POST(request) {
     try {
         const body = await request.json();
 
+        const headersList = headers();
+        const defaultLocale = headersList.get("accept-language");
+        const locale = cookies().get("NEXT_LOCALE")?.value || defaultLocale || "en";
+
         if (!Array.isArray(body.categories) || !Array.isArray(body.history) || !Array.isArray(body.participants) || body.title == undefined) {
             return new Response(JSON.stringify({ error: 'Invalid input data' }), {
                 status: 400,
@@ -121,7 +126,14 @@ export async function POST(request) {
         const contestCollection = db.collection('contest');
         await contestCollection.insertOne(newContest);
 
-        contactParticipants(body.participants, { title: `${body.title}: A new Contest started !`, content: `Hey !\nA new contest just started, join ${body.title} right now to see today's theme !` }).then(
+        contactParticipants(body.participants, {
+            title: `${game.title}: ` + locale.includes('fr') ?
+                "Un nouveau concours a commencé !" :
+                "A new Contest started !",
+            content: locale.includes('fr') ?
+                `Salut !\nUn nouveau concours vient de commencer, rejoignez ${game.title} dès maintenant pour voir le thème d'aujourd'hui !` :
+                `Hey !\nA new contest just started, join ${game.title} right now to see today's theme !`
+        }).then(
             response => console.log(response.message)
         ).catch(
             err => console.error(err)
