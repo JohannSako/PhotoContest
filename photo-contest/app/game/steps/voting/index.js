@@ -21,7 +21,7 @@ export default function GameVoting({ gamemaster, theme, photos, gameId }) {
     const [like, setLike] = useState(false);
     const [likedPictureIndex, setLikedPictureIndex] = useState(-1);
     const [loading, setLoading] = useState(false);
-    const { dictionary } = useTranslation();
+    const { dictionary, locale } = useTranslation();
 
     useEffect(() => {
         const token = Cookies.get('token');
@@ -117,7 +117,7 @@ export default function GameVoting({ gamemaster, theme, photos, gameId }) {
                     <div className="flex flex-row gap-1">
                         <Text color="white" size="14px" weight="500">Theme:</Text>
                         <div>
-                            <Text color="white" size="14px" weight="700">{theme.title.toUpperCase()}</Text>
+                            <Text color="white" size="14px" weight="700">{locale === 'fr' ? dictionary[theme.title].toUpperCase() : theme.title.toUpperCase()}</Text>
                         </div>
                     </div>
                 </div>

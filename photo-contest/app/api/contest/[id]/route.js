@@ -1,3 +1,4 @@
+import { decrypt } from '@/lib/crypto';
 import clientPromise from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 
@@ -39,6 +40,10 @@ export async function GET(request, { params }) {
                 status: 202,
                 headers: { 'Content-Type': 'application/json' },
             });
+        }
+
+        for (let photo of photos) {
+            photo.photo = photo.photo.startsWith('http') ? photo.photo : decrypt(Buffer.from(photo.photo, 'base64'));
         }
 
         const userIds = photos.map(photo => photo.user_id);

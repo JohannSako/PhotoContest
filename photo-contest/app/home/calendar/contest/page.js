@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import Loader from "@/components/loader";
 import Image from "next/image";
 import { Suspense } from "react";
+import { useTranslation } from "@/context/TranslationContext";
 
 function ContestHistory() {
     const searchParams = useSearchParams();
@@ -20,6 +21,8 @@ function ContestHistory() {
     const [index, setIndex] = useState(0);
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+
+    const {dictionary, locale} = useTranslation();
 
     useEffect(() => {
         async function fetchContest() {
@@ -62,7 +65,7 @@ function ContestHistory() {
                     <div className="flex flex-row gap-1">
                         <Text color="white" size="14px" weight="500">Theme:</Text>
                         <div>
-                            <Text color="white" size="14px" weight="700">{theme && theme.title.toUpperCase()}</Text>
+                            <Text color="white" size="14px" weight="700">{theme && (locale === 'fr' ? dictionary[theme.title].toUpperCase() : theme.title.toUpperCase())}</Text>
                         </div>
                     </div>
                 </div>

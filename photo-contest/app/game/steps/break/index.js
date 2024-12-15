@@ -9,12 +9,14 @@ import Text from "@/components/text";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import { useTranslation } from "@/context/TranslationContext";
+import Carousel from "@/components/photo/carousel";
 
 export default function GameBreak({ photos, theme, gamemaster, gameId }) {
     const router = useRouter();
     const [isGameMaster, setIsGameMaster] = useState(false);
-    const [photo, setPhoto] = useState({});
-    const { dictionary } = useTranslation();
+    const [winners, setWinners] = useState([]);
+    const { dictionary, locale } = useTranslation();
+    const [index, setIndex] = useState(0);
 
     useEffect(() => {
         const token = Cookies.get('token');
@@ -32,14 +34,15 @@ export default function GameBreak({ photos, theme, gamemaster, gameId }) {
     }, [gamemaster]);
 
     useEffect(() => {
-        let winner = photos.length > 0 ? photos[0] : null;
+        let currentWinners = photos.length > 0 ? [photos[0]] : [];
 
-        photos.forEach((current_photo) => {
-            if (winner.votes.length < current_photo.votes.length) {
-                winner = current_photo;
-            }
+        photos.forEach((current_photo, index) => {
+            if (currentWinners[0].votes.length < current_photo.votes.length)
+                currentWinners = [current_photo];
+            else if (index !== 0 && currentWinners[0].votes.length === current_photo.votes.length)
+                currentWinners.push(current_photo);
         })
-        setPhoto(winner);
+        setWinners(currentWinners);
     }, [photos])
 
     return (
@@ -58,13 +61,15 @@ export default function GameBreak({ photos, theme, gamemaster, gameId }) {
                         <div className="flex flex-row gap-1">
                             <Text color="#5DB075" size="14px" weight="500">Theme:</Text>
                             <div>
-                                <Text color="#5DB075" size="14px" weight="700">{theme.title.toUpperCase()}</Text>
+                                <Text color="#5DB075" size="14px" weight="700">{locale === 'fr' ? dictionary[theme.title].toUpperCase() : theme.title.toUpperCase()}</Text>
                             </div>
                         </div>
                     </div>
                     <div className="text-end">
                         <div className={`flex w-[70vw] h-[70vh] items-center justify-center`}>
-                            {photo ? <img src={photo.photo} alt="Selected" className={`w-full h-full object-cover rounded-md`} /> : (
+                            {winners.length !== 0 ? (
+                                winners.length === 1 ? <img src={winners[0].photo} alt="Selected" className={`w-full h-full object-cover rounded-md`} /> : <Carousel photos={winners} setIndex={setIndex} />
+                            ) : (
                                 <div className="flex w-full text-center">
                                     <Text>{dictionary.believeNoWinner}</Text>
                                 </div>
@@ -74,7 +79,7 @@ export default function GameBreak({ photos, theme, gamemaster, gameId }) {
                             <div className="flex mb-[3px]">
                                 <Text color="#5DB075" size="14px" weight="700">{dictionary.winner}: </Text>
                             </div>
-                            {(photo && photo.user) ? <Text color="#5DB075" size="20px" weight="700">{photo.user.name}</Text> : (
+                            {(winners.length !== 0 && winners[index].user) ? <Text color="#5DB075" size="20px" weight="700">{winners[index].user.name}</Text> : (
                                 <div className="ml-1 mb-[3px]">
                                     <Text size="14px">{dictionary.makesThisGuyUseless}</Text>
                                 </div>

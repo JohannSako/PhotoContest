@@ -1,5 +1,6 @@
 import clientPromise from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
+import { decrypt } from '@/lib/crypto';
 
 export async function GET(request, { params }) {
     try {
@@ -40,6 +41,10 @@ export async function GET(request, { params }) {
             if (!photos || photos.length === 0) {
                 contest.photo = null;
                 continue;
+            }
+
+            for (let photo of photos) {
+                photo.photo = photo.photo.startsWith('http') ? photo.photo : decrypt(Buffer.from(photo.photo, 'base64'));
             }
 
             let winnerPhoto = null;

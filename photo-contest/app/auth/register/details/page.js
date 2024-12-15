@@ -53,6 +53,7 @@ function AuthRegisterDetails() {
             const data = await response.json();
 
             if (response.ok) {
+                toast.success('Account created successfully !')
                 router.push('/auth/login');
             } else {
                 toast.error(data.error);

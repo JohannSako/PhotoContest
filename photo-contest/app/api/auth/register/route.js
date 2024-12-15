@@ -1,6 +1,7 @@
 import clientPromise from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import nodemailer from 'nodemailer';
+import { encrypt } from '@/lib/crypto';
 
 function isRegisterRequestBody(body) {
   if (!(typeof body.name === 'string' && body.name.length >= 4))
@@ -54,7 +55,7 @@ export async function POST(request) {
       name,
       password: hashedPassword,
       mail,
-      profilePicture,
+      profilePicture: encrypt(profilePicture).toString('base64')
     };
 
     await userCollection.insertOne(newUser);

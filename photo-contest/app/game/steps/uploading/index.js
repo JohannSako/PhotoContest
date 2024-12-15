@@ -19,7 +19,7 @@ export default function GameUploading({ contest, gamemaster, theme, category, ga
     const [showTheme, setShowTheme] = useState(false);
     const [loading, setLoading] = useState(false);
     const [showThemeLoading, setShowThemeLoading] = useState(true);
-    const { dictionary } = useTranslation();
+    const { dictionary, locale } = useTranslation();
 
     useEffect(() => {
         const token = Cookies.get('token');
@@ -116,7 +116,7 @@ export default function GameUploading({ contest, gamemaster, theme, category, ga
                 <div className="flex flex-row gap-1">
                     <Text color="#5DB075" size="14px" weight="500">Theme:</Text>
                     <div>
-                        <Text color="#5DB075" size="14px" weight="700">{theme.title.toUpperCase()}</Text>
+                        <Text color="#5DB075" size="14px" weight="700">{locale === 'fr' ? dictionary[theme.title].toUpperCase() : theme.title.toUpperCase()}</Text>
                     </div>
                 </div>
             </div>

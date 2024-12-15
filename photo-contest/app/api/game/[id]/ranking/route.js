@@ -1,9 +1,10 @@
+import { decrypt } from '@/lib/crypto';
 import clientPromise from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 
 export async function GET(request, { params }) {
     try {
-        const { id } = params; // ID de la game
+        const { id } = params;
 
         const client = await clientPromise;
         const db = client.db('main');
@@ -12,7 +13,6 @@ export async function GET(request, { params }) {
         const photoCollection = db.collection('photo');
         const userCollection = db.collection('userdata');
 
-        // Récupérer la game
         const game = await gameCollection.findOne({ _id: new ObjectId(id) });
         if (!game) {
             return new Response(JSON.stringify({ error: 'Game not found' }), {
@@ -45,18 +45,21 @@ export async function GET(request, { params }) {
                 }
             },
             {
-                $sort: { '_id': 1, 'votesCount': -1 }
-            },
-            {
                 $group: {
                     _id: '$_id',
-                    winnerUserId: { $first: '$photos.user_id' }
+                    maxVotes: { $max: '$votesCount' },
+                    photos: { $push: { user_id: '$photos.user_id', votesCount: '$votesCount' } }
                 }
             },
-            // Group par user_id pour accumuler les scores
+            { $unwind: '$photos' },
+            {
+                $match: {
+                    $expr: { $eq: ['$photos.votesCount', '$maxVotes'] }
+                }
+            },
             {
                 $group: {
-                    _id: '$winnerUserId',
+                    _id: '$photos.user_id',
                     score: { $sum: 1 }
                 }
             }
@@ -78,13 +81,15 @@ export async function GET(request, { params }) {
 
         const users = await userCollection.find({ _id: { $in: allUserIds } }).toArray();
 
-        // Construire la liste des utilisateurs avec leurs scores, incluant ceux avec 0 points
+        for (let user of users) {
+            user.profilePicture = user.profilePicture.startsWith('http') ? user.profilePicture : decrypt(Buffer.from(user.profilePicture, 'base64'));
+        }
+
         const usersWithScores = users.map(user => ({
             user,
             score: userScores[user._id.toString()] || 0,
         }));
 
-        // Trier les utilisateurs par score décroissant
         usersWithScores.sort((a, b) => b.score - a.score);
 
         return new Response(JSON.stringify({ users: usersWithScores }), {
