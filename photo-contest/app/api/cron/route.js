@@ -54,7 +54,7 @@ async function updateContestState() {
                 content: locale.includes('fr') ?
                     `La période de vote du concours a commencé. Veuillez voter pour vos photos préférées.` :
                     `The contest voting period has started. Please vote for your favorite photos.`
-            });
+            }, locale);
         } else if (contest.state === 'VOTING' && ((game.whenPlayersVoted && await allParticipantsVoted(game)) || (!game.whenPlayersVoted && now >= endVoteTime))) {
             await contestCollection.updateOne(
                 { _id: contest._id },
@@ -68,7 +68,7 @@ async function updateContestState() {
                 content: locale.includes('fr') ?
                     `La période de vote du concours est terminée. Veuillez vérifier les résultats.` :
                     `The contest voting period has ended. Please check the results.`
-            });
+            }, locale);
         } else if (contest.state === 'BREAK' && now >= startUploadTime && now <= endUploadTime) {
             const newContestId = await createNewContest(game, db);
             await gameCollection.updateOne(
@@ -126,7 +126,7 @@ async function createNewContest(game, db) {
         content: locale.includes('fr') ?
             `Salut !\nUn nouveau concours vient de commencer, rejoignez ${game.title} dès maintenant pour voir le thème d'aujourd'hui !` :
             `Hey !\nA new contest just started, join ${game.title} right now to see today's theme !`
-    });
+    }, locale);
 
     return result.insertedId;
 }

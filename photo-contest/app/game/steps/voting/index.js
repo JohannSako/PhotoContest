@@ -71,7 +71,7 @@ export default function GameVoting({ gamemaster, theme, photos, gameId }) {
             });
             const result = await response.json();
             if (response.ok) {
-                toast.error(response.status === 200 ? 'Your vote has been saved !' : 'Your vote has been updated !');
+                toast.success(response.status === 200 ? 'Your vote has been saved !' : 'Your vote has been updated !');
                 setLikedPictureIndex(index);
                 setLike(true);
             } else {
