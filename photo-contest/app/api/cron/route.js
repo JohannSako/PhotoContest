@@ -22,10 +22,6 @@ async function updateContestState() {
     const gameCollection = db.collection('game');
     const contestCollection = db.collection('contest');
 
-    const headersList = headers();
-    const defaultLocale = headersList.get("accept-language");
-    const locale = cookies().get("NEXT_LOCALE")?.value || defaultLocale || "en";
-
     const now = normalizeToTime(Date.now());
 
     const games = await gameCollection.find().toArray();
@@ -41,6 +37,11 @@ async function updateContestState() {
 
         const contestCreationTime = normalizeToTime(contest.date);
 
+        const headersList = headers();
+        const defaultLocale = headersList.get("accept-language");
+        const locale = cookies().get("NEXT_LOCALE")?.value || defaultLocale || "en";
+        const isFrench = locale.includes('fr');
+
         if (contest.state === 'UPLOADING' && now >= endUploadTime && (contestCreationTime < endUploadTime || isNowNextDay(contest.date))) {
             await contestCollection.updateOne(
                 { _id: contest._id },
@@ -48,13 +49,13 @@ async function updateContestState() {
             );
 
             await contactParticipants(game.participants.concat(game.gamemaster), {
-                title: `${game.title}: ` + locale.includes('fr') ?
+                title: `${game.title}: ` + isFrench ?
                     "Vote du concours commencé" :
                     "Contest Voting Started",
-                content: locale.includes('fr') ?
+                content: isFrench ?
                     `La période de vote du concours a commencé. Veuillez voter pour vos photos préférées.` :
                     `The contest voting period has started. Please vote for your favorite photos.`
-            }, locale);
+            }, isFrench ? 'fr' : 'en');
         } else if (contest.state === 'VOTING' && ((game.whenPlayersVoted && await allParticipantsVoted(game)) || (!game.whenPlayersVoted && now >= endVoteTime))) {
             await contestCollection.updateOne(
                 { _id: contest._id },
@@ -62,13 +63,13 @@ async function updateContestState() {
             );
 
             await contactParticipants(game.participants.concat(game.gamemaster), {
-                title: `${game.title}: ` + locale.includes('fr') ?
+                title: `${game.title}: ` + isFrench ?
                     "Vote du concours terminé" :
                     "Contest Voting Ended",
-                content: locale.includes('fr') ?
+                content: isFrench ?
                     `La période de vote du concours est terminée. Veuillez vérifier les résultats.` :
                     `The contest voting period has ended. Please check the results.`
-            }, locale);
+            }, isFrench ? 'fr' : 'en');
         } else if (contest.state === 'BREAK' && now >= startUploadTime && now <= endUploadTime) {
             const newContestId = await createNewContest(game, db);
             await gameCollection.updateOne(
@@ -103,6 +104,7 @@ async function createNewContest(game, db) {
     const headersList = headers();
     const defaultLocale = headersList.get("accept-language");
     const locale = cookies().get("NEXT_LOCALE")?.value || defaultLocale || "en";
+    const isFrench = locale.includes('fr');
 
     const { theme, categoryId } = await getRandomTheme(categories, history, db);
 
@@ -120,13 +122,13 @@ async function createNewContest(game, db) {
     const userIds = game.participants.concat(game.gamemaster);
 
     await contactParticipants(userIds, {
-        title: `${game.title}: ` + locale.includes('fr') ?
+        title: `${game.title}: ` + isFrench ?
             "Un nouveau concours a commencé !" :
             "A new Contest started !",
-        content: locale.includes('fr') ?
+        content: isFrench ?
             `Salut !\nUn nouveau concours vient de commencer, rejoignez ${game.title} dès maintenant pour voir le thème d'aujourd'hui !` :
             `Hey !\nA new contest just started, join ${game.title} right now to see today's theme !`
-    }, locale);
+    }, isFrench ? 'fr' : 'en');
 
     return result.insertedId;
 }
