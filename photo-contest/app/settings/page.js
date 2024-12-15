@@ -9,11 +9,13 @@ import PopUp from "@/components/popUp";
 import { jwtDecode } from "jwt-decode";
 import Loader from "@/components/loader";
 import toast from "react-hot-toast";
+import { useTranslation } from "@/context/TranslationContext";
 
 export default function Settings() {
     const router = useRouter();
     const [deletePopUp, setDeletePopUp] = useState(false);
     const [loading, setLoading] = useState(false);
+    const { dictionary } = useTranslation();
 
     const handleLogout = () => {
         Cookies.remove('token');
@@ -59,21 +61,21 @@ export default function Settings() {
         <div className="flex gap-[251px] items-center flex-col p-4">
             {loading && <Loader />}
             <Header
-                title="Settings"
-                left="Back"
+                title={dictionary.settings}
+                left={dictionary.back}
                 leftFunction={() => router.back()}
             />
             <div className="flex items-center gap-4 flex-col">
-                <Button type="secondary" text="Logout" width="341px" onClick={handleLogout} />
-                <Button type="delete" text="Delete account" width="341px" onClick={() => setDeletePopUp(true)} />
+                <Button type="secondary" text={dictionary.logout} width="341px" onClick={handleLogout} />
+                <Button type="delete" text={dictionary.deleteAccount} width="341px" onClick={() => setDeletePopUp(true)} />
             </div>
             {deletePopUp && <div className="absolute top-1/2 -translate-y-1/2">
                 <PopUp
-                    title="Deleting your account"
-                    content="Are you sure you want to delete your account? This action is permanent and cannot be undone. All your photos, points, and data will be permanently deleted, and you will lose access to any active games."
-                    firstTextButton="Delete"
+                    title={dictionary.deletingYourAccount}
+                    content={dictionary.deletingYourAccountText}
+                    firstTextButton={dictionary.delete}
                     firstButton={handleDeleteAccount}
-                    secondTextButton="Cancel"
+                    secondTextButton={dictionary.cancel}
                     secondButton={() => setDeletePopUp(false)}
                     type="delete"
                 />

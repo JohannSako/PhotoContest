@@ -9,11 +9,13 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
+import { useTranslation } from "@/context/TranslationContext";
 
 export default function AuthRegisterCredentials() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter();
+    const {dictionary} = useTranslation();
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
@@ -25,7 +27,7 @@ export default function AuthRegisterCredentials() {
 
     const handleRegister = () => {
         if (typeof email !== 'string' || !(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)))
-            toast.error("Invalid email address");
+            toast.error(dictionary.invalidEmail);
         else if (!(typeof password === 'string' && password.length >= 6))
             toast.error("Invalid password");
         else
@@ -38,14 +40,14 @@ export default function AuthRegisterCredentials() {
                 <IconSlogan />
             </div>
             <div className="flex flex-col gap-4 items-center pt-[72px] pb-[49px]">
-                <TextInput value={email} onChange={handleEmailChange} placeholder="Enter a valid email address" />
-                <TextInput value={password} onChange={handlePasswordChange} show={true} placeholder="Create a strong password" type="password" />
+                <TextInput value={email} onChange={handleEmailChange} placeholder={dictionary.enterValidMail} />
+                <TextInput value={password} onChange={handlePasswordChange} show={true} placeholder={dictionary.createStrongPassword} type="password" />
             </div>
             <Button text="Continue" type="secondary" width="343px" height="40px" onClick={handleRegister} />
             <div className="flex flex-row pt-[146px] gap-[5px]">
-                <Text weight="500" color="white">Already have an account ?</Text>
+                <Text weight="500" color="white">{dictionary.alreadyHaveAccount}</Text>
                 <Link href="/auth/login">
-                    <Text weight="700" color="white">Log In</Text>
+                    <Text weight="700" color="white">{dictionary.login}</Text>
                 </Link>
             </div>
         </div>

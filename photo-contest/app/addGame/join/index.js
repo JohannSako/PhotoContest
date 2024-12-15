@@ -1,6 +1,7 @@
 import Button from "@/components/input/button";
 import TextInput from "@/components/input/text";
 import Loader from "@/components/loader";
+import { useTranslation } from "@/context/TranslationContext";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -10,6 +11,7 @@ export default function JoinGame() {
     const [code, setCode] = useState('');
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const { dictionary } = useTranslation();
 
     const handleCodeChange = (e) => {
         setCode(e.target.value);
@@ -48,11 +50,11 @@ export default function JoinGame() {
             <TextInput
                 value={code}
                 onChange={handleCodeChange}
-                placeholder="Code"
+                placeholder={dictionary.code}
             />
             <Button
                 width="340px"
-                text="Join"
+                text={dictionary.join}
                 onClick={handleJoin}
             />
         </div>

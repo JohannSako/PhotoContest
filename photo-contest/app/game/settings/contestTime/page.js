@@ -12,6 +12,7 @@ import TimeSetCheck from "@/components/time/timeSet/check";
 import TimePicker from "@/components/time/timePicker";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
+import { useTranslation } from "@/context/TranslationContext";
 
 function GameSettingsContestTime() {
     const router = useRouter();
@@ -26,6 +27,8 @@ function GameSettingsContestTime() {
     const [playersVoted, setPlayersVoted] = useState(false);
 
     const [showingType, setShowingType] = useState("");
+
+    const { dictionary } = useTranslation();
 
     const _id = searchParams.get('_id');
 
@@ -77,7 +80,7 @@ function GameSettingsContestTime() {
             });
             const result = await response.json();
             if (response.ok) {
-                toast.success('Contest times updated successfully');
+                toast.success(dictionary.contestTimesUpdatedSuccessfully);
                 router.back();
             } else {
                 toast.error(result.error || 'Failed to update contest times');
@@ -127,10 +130,10 @@ function GameSettingsContestTime() {
             {loading && <Loader />}
             <div className="flex items-center flex-col p-4 gap-[58px]">
                 <Header
-                    title="Game Settings"
-                    left="Back"
+                    title={dictionary.gameSettings}
+                    left={dictionary.back}
                     leftFunction={() => router.back()}
-                    right="Apply"
+                    right={dictionary.apply}
                     rightFunction={handleApply}
                 />
                 {showingType && (
@@ -144,17 +147,19 @@ function GameSettingsContestTime() {
                 )}
                 <div className="flex flex-col w-[90vw] gap-6">
                     <div className="flex flex-col gap-3">
-                        <Text color="#4B9460" weight="600">UPLOADING</Text>
+                        <Text color="#4B9460" weight="600">{dictionary.uploading}</Text>
                         <div>
                             <div className="flex flex-row">
                                 <div className="flex w-[50%]">
-                                    <Text size={13}>CONTEST STARTING TIME</Text>
+                                    <Text size={13}>{dictionary.contestStartingTime}</Text>
                                 </div>
                                 <div className="flex w-[50%]">
-                                    <Text size={13}>CONTEST ENDING TIME</Text>
+                                    <Text size={13}>{dictionary.contestEndingTime}</Text>
                                 </div>
                             </div>
                             <TimeSetDuo
+                                firstText={dictionary.setTime}
+                                secondText={dictionary.setTime}
                                 firstValue={dateToHMString(startTime)}
                                 secondValue={dateToHMString(endTime)}
                                 firstOnClick={() => handleShowingPicker("START")}
@@ -163,13 +168,14 @@ function GameSettingsContestTime() {
                         </div>
                     </div>
                     <div className="flex flex-col gap-3">
-                        <Text color="#4B9460" weight="600">VOTING</Text>
+                        <Text color="#4B9460" weight="600">{dictionary.voting}</Text>
                         <div>
-                            <Text size={13}>CONTEST ENDING TIME</Text>
+                            <Text size={13}>{dictionary.contestEndingTime}</Text>
                             <TimeSetCheck
+                                buttonText={dictionary.setTime}
                                 timeValue={dateToHMString(endVoteTime)}
                                 onClick={() => handleShowingPicker("END_VOTE")}
-                                checkBoxText="When players voted"
+                                checkBoxText={dictionary.whenPlayersVoted}
                                 state={playersVoted}
                                 setState={() => setPlayersVoted(!playersVoted)}
                             />

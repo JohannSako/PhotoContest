@@ -9,6 +9,7 @@ import Loader from "@/components/loader";
 import Cookies from "js-cookie";
 import PopUp from "@/components/popUp";
 import toast from "react-hot-toast";
+import { useTranslation } from "@/context/TranslationContext";
 
 function GameSettingsParticipants() {
     const router = useRouter();
@@ -20,6 +21,8 @@ function GameSettingsParticipants() {
     const [error, setError] = useState(null);
     const [participantsToRemove, setParticipantsToRemove] = useState([]);
     const [filteredParticipants, setFilteredParticipants] = useState([]);
+
+    const { dictionary } = useTranslation();
 
     const _id = searchParams.get('_id');
 
@@ -81,7 +84,7 @@ function GameSettingsParticipants() {
             });
             const result = await response.json();
             if (response.ok) {
-                toast.success('Participants removed successfully');
+                toast.success(dictionary.participantsRemovedSuccessfully);
                 router.back();
             } else {
                 toast.error(result.error || 'Failed to remove participants');
@@ -101,16 +104,16 @@ function GameSettingsParticipants() {
             {loading && <Loader />}
             <div className="flex items-center flex-col p-4 gap-[21px]">
                 <Header
-                    title="Game Settings"
-                    left="Back"
+                    title={dictionary.gameSettings}
+                    left={dictionary.back}
                     leftFunction={() => router.back()}
-                    right="Apply"
+                    right={dictionary.apply}
                     rightFunction={handleApply}
                 />
                 <SearchInput
                     value={title}
                     onChange={handleSearch}
-                    placeholder="Search participants"
+                    placeholder={dictionary.searchParticipants}
                 />
                 <div className="grid gap-[16px] pt-[21px]">
                     {filteredParticipants.map((participant) => {

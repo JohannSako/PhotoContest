@@ -10,6 +10,7 @@ import PopUp from "@/components/popUp";
 import { jwtDecode } from "jwt-decode";
 import Loader from "@/components/loader";
 import toast from "react-hot-toast";
+import { useTranslation } from "@/context/TranslationContext";
 
 const leavePopUpInfo = {
     title: "Leaving your game",
@@ -31,6 +32,7 @@ export default function Home() {
     const [isGameMaster, setIsGameMaster] = useState(false);
     const [loading, setLoading] = useState(false);
     const [gameId, setGameId] = useState('');
+    const { dictionary } = useTranslation();
 
     useEffect(() => {
         getGames();
@@ -132,14 +134,14 @@ export default function Home() {
         <div className="flex gap-8 items-center flex-col p-4">
             {loading && <Loader />}
             <Header
-                title="Home"
-                left="Settings"
-                right="Add Game"
+                title={dictionary.home}
+                left={dictionary.settings}
+                right={dictionary.addGame}
                 leftFunction={() => router.push("/settings/")}
                 rightFunction={() => router.push("/addGame/")}
             />
             <SearchInput
-                placeholder="Search Game"
+                placeholder={dictionary.searchGame}
                 value={input}
                 onChange={handleInput}
             />
@@ -156,11 +158,11 @@ export default function Home() {
             </div>
             {binPopUp && <div className="absolute top-1/2 -translate-y-1/2">
                 <PopUp
-                    title={isGameMaster ? deletePopUpInfo.title : leavePopUpInfo.title}
-                    content={isGameMaster ? deletePopUpInfo.content : leavePopUpInfo.content}
-                    firstTextButton={isGameMaster ? deletePopUpInfo.button : leavePopUpInfo.button}
+                    title={isGameMaster ? dictionary.deletingGame : dictionary.leavingGame}
+                    content={isGameMaster ? dictionary.deletingGameText : dictionary.leavingGameText}
+                    firstTextButton={isGameMaster ? dictionary.delete : dictionary.leave}
                     firstButton={deleteGame}
-                    secondTextButton="Cancel"
+                    secondTextButton={dictionary.cancel}
                     secondButton={() => closePopUp()}
                     type="delete"
                 />

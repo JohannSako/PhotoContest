@@ -8,11 +8,13 @@ import Loader from "@/components/loader";
 import toast from "react-hot-toast";
 import Header from "@/components/header";
 import { Suspense } from "react";
+import { useTranslation } from "@/context/TranslationContext";
 
 function HomeCalendar() {
     const [contests, setContests] = useState([]);
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const { dictionary } = useTranslation();
 
     const searchParams = useSearchParams();
     const _id = searchParams.get('_id');
@@ -89,11 +91,13 @@ function HomeCalendar() {
     return (
         <div className="flex flex-col items-center bg-primary min-h-screen py-4 gap-5">
             <Header
-                title="Calendar"
-                left="Back"
+                title={dictionary.calendar}
+                left={dictionary.back}
+                right={dictionary.ranking}
                 mainColor="white"
                 buttonColor="white"
                 leftFunction={() => router.back()}
+                rightFunction={() => router.push(`/home/calendar/ranking?_id=${_id}`)}
             />
             {sortedKeys.map(key => {
                 const [year, month] = key.split('-').map(Number);

@@ -2,6 +2,7 @@ import clientPromise from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { contactParticipants } from '../contest/route';
 import { getRandomTheme } from '../contest/route';
+import { useTranslation } from '@/context/TranslationContext';
 
 function normalizeToTime(milliseconds) {
     const date = new Date(milliseconds);
@@ -46,8 +47,7 @@ async function updateContestState() {
                 title: `${game.title}: Contest Voting Started`,
                 content: 'The contest voting period has started. Please vote for your favorite photos.'
             });
-        } else if (contest.state === 'VOTING' && (now >= endVoteTime || (game.whenPlayersVoted && await allParticipantsVoted(game)))) {
-
+        } else if (contest.state === 'VOTING' && ((game.whenPlayersVoted && await allParticipantsVoted(game)) || (!game.whenPlayersVoted && now >= endVoteTime))) {
             await contestCollection.updateOne(
                 { _id: contest._id },
                 { $set: { state: 'BREAK' } }

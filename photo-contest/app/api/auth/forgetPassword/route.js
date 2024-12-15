@@ -3,6 +3,7 @@ import clientPromise from '@/lib/mongodb';
 import nodemailer from 'nodemailer';
 import { ObjectId } from 'mongodb';
 import jwt from 'jsonwebtoken';
+import { useTranslation } from '@/context/TranslationContext';
 
 function isEmailValid(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -16,6 +17,7 @@ export async function POST(request) {
   try {
     const body = await request.json();
     const { mail } = body;
+    const { dictionary } = useTranslation();
 
     if (!isEmailValid(mail)) {
       return new Response(JSON.stringify({ error: 'Invalid email address' }), {

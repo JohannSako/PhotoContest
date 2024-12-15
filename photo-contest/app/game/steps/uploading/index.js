@@ -10,6 +10,7 @@ import Upload from "@/components/photo/upload";
 import GameTheme from "../theme";
 import Loader from "@/components/loader";
 import toast from "react-hot-toast";
+import { useTranslation } from "@/context/TranslationContext";
 
 export default function GameUploading({ contest, gamemaster, theme, category, gameId, photos }) {
     const router = useRouter();
@@ -17,6 +18,8 @@ export default function GameUploading({ contest, gamemaster, theme, category, ga
     const [photo, setPhoto] = useState('');
     const [showTheme, setShowTheme] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [showThemeLoading, setShowThemeLoading] = useState(true);
+    const { dictionary } = useTranslation();
 
     useEffect(() => {
         const token = Cookies.get('token');
@@ -40,6 +43,7 @@ export default function GameUploading({ contest, gamemaster, theme, category, ga
             seenContests.push(contest._id);
             localStorage.setItem('seenContests', JSON.stringify(seenContests));
         }
+        setShowThemeLoading(false);
     }, [contest._id]);
 
     useEffect(() => {
@@ -94,19 +98,21 @@ export default function GameUploading({ contest, gamemaster, theme, category, ga
 
     if (showTheme)
         return <GameTheme theme={theme} category={category} handleLeaveTheme={handleLeavingTheme} />
+    else if (showThemeLoading)
+        return <Loader />
 
     return (
         <div className="flex items-center flex-col p-4 gap-10">
             {loading && <Loader />}
             <Header
-                title="Game"
-                left="Back"
+                title={dictionary.game}
+                left={dictionary.back}
                 leftFunction={() => router.back()}
-                right={isGameMaster ? "Settings" : ""}
+                right={isGameMaster ? dictionary.settings : ""}
                 rightFunction={isGameMaster ? (() => router.push(`/game/settings?_id=${gameId}`)) : undefined}
             />
             <div className="flex flex-row w-full gap-8 justify-center">
-                <Text color="#5DB075" size="14px" weight="900">NOW UPLOADING</Text>
+                <Text color="#5DB075" size="14px" weight="900">{dictionary.nowUploading}</Text>
                 <div className="flex flex-row gap-1">
                     <Text color="#5DB075" size="14px" weight="500">Theme:</Text>
                     <div>
@@ -116,7 +122,7 @@ export default function GameUploading({ contest, gamemaster, theme, category, ga
             </div>
             <div className="text-end">
                 <Upload onImageChange={handlePhotoChange} defaultImage={photo ? photo : ''} />
-                {photo && <Text color="#5DB075" size="14px" weight="500">waiting for the voting time</Text>}
+                {photo && <Text color="#5DB075" size="14px" weight="500">{dictionary.waitingForTheVotingTime}</Text>}
             </div>
         </div>
     )

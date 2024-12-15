@@ -9,6 +9,7 @@ import Button from "@/components/input/button";
 import Category from "@/components/category";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
+import { useTranslation } from "@/context/TranslationContext";
 
 function GameSettingsCategories() {
     const router = useRouter();
@@ -19,6 +20,8 @@ function GameSettingsCategories() {
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const { dictionary } = useTranslation();
 
     const _id = searchParams.get('_id');
 
@@ -116,16 +119,16 @@ function GameSettingsCategories() {
             {loading && <Loader />}
             <div className="flex items-center flex-col p-4 gap-[21px]">
                 <Header
-                    title="Game Settings"
-                    left="Back"
+                    title={dictionary.gameSettings}
+                    left={dictionary.back}
                     leftFunction={() => router.back()}
-                    right="Apply"
+                    right={dictionary.apply}
                     rightFunction={handleApply}
                 />
                 <SearchInput
                     value={title}
                     onChange={handleSearch}
-                    placeholder="Search categories"
+                    placeholder={dictionary.searchCategories}
                 />
                 <div className="grid grid-cols-2 gap-[29px] pt-[21px]">
                     {filteredCategories.map((category) => (

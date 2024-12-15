@@ -6,7 +6,7 @@ import Text from '../text';
 export default function Category({ text, icon, state, setState }) {
   const textColor = state ? '#5DB075' : '#979797';
   const iconColor = state ? 'invert(61%) sepia(44%) saturate(416%) hue-rotate(85deg) brightness(93%) contrast(86%)' : 'invert(61%) sepia(29%) saturate(25%) hue-rotate(315deg) brightness(92%) contrast(93%)';
-  const boxShadow = state ? '0px 1px 4px 0px rgba(0, 0, 0, 0.25)' : '0px 1px 4px 0px rgba(0, 0, 0, 0.25) inset';
+  const boxShadow = state ?  '0px 1px 4px 0px rgba(0, 0, 0, 0.25) inset' : '0px 1px 4px 0px rgba(0, 0, 0, 0.25)';
 
   return (
     <div

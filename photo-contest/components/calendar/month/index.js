@@ -4,6 +4,7 @@ import Day from '../day';
 import Text from '@/components/text';
 import toast from "react-hot-toast";
 import { useState } from 'react';
+import { useTranslation } from '@/context/TranslationContext';
 
 const getDaysInMonth = (month, year) => {
   return new Date(year, month + 1, 0).getDate();
@@ -20,6 +21,9 @@ export default function Month({ monthNb, year, contests, handleClick }) {
   const month = new Date(`${months[monthNb - 1]} 1, ${year}`).getMonth();
   const daysInMonth = getDaysInMonth(month, year);
   let firstDayOfWeek = getFirstDayOfWeek(month, year) - 1;
+
+  const { dictionary } = useTranslation();
+
   if (firstDayOfWeek === -1) firstDayOfWeek = 6;
 
   const days = [];
@@ -48,10 +52,10 @@ export default function Month({ monthNb, year, contests, handleClick }) {
 
   return (
     <div className='text-start'>
-      <Text size="16px" weight="600" color="#FFF" style={{ fontVariantNumeric: 'slashed-zero' }}>{`${months[monthNb - 1]} ${year}`}</Text>
+      <Text size="16px" weight="600" color="#FFF" style={{ fontVariantNumeric: 'slashed-zero' }}>{`${dictionary[months[monthNb - 1]]} ${year}`}</Text>
       <div className="text-center grid grid-cols-7 gap-2">
         {daysOfWeek.map(day => (
-          <Text key={day} size="14px" weight="400" color="#FFF" style={{ fontVariantNumeric: 'slashed-zero' }} className="text-center">{day}</Text>
+          <Text key={day} size="14px" weight="400" color="#FFF" style={{ fontVariantNumeric: 'slashed-zero' }} className="text-center">{dictionary[day]}</Text>
         ))}
       </div>
       <div className="grid grid-cols-7 gap-2">

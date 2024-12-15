@@ -8,11 +8,13 @@ import { useState } from "react"
 import { useRouter } from "next/navigation";
 import Loader from "@/components/loader";
 import toast from "react-hot-toast";
+import { useTranslation } from "@/context/TranslationContext";
 
 export default function AuthLoginSendCode() {
     const [email, setEmail] = useState('')
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const { dictionary } = useTranslation();
 
     const handleEmail = (e) => {
         setEmail(e.target.value)
@@ -53,14 +55,14 @@ export default function AuthLoginSendCode() {
     return (
         <div className="flex w-full h-[100vh] bg-primary items-center flex-col p-12">
             {loading && <Loader />}
-            <Header title="" left="Back" leftFunction={handleBack} buttonColor="white" />
+            <Header title="" left={dictionary.back} leftFunction={handleBack} buttonColor="white" />
             <div className="flex pt-10">
                 <IconSlogan />
             </div>
             <div className="flex flex-col gap-4 items-center pt-[72px] pb-[120px]">
-                <TextInput value={email} onChange={handleEmail} placeholder="Email" />
+                <TextInput value={email} onChange={handleEmail} placeholder={dictionary.email} />
             </div>
-            <Button text="Send code" type="secondary" width="343px" onClick={sendCode} />
+            <Button text={dictionary.sendCode} type="secondary" width="343px" onClick={sendCode} />
         </div>
     )
 }
