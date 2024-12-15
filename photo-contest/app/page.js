@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import SplashScreen from "./splash/page";
 import { useRouter } from 'next/navigation';
 import Cookies from "js-cookie";
+import toast from "react-hot-toast";
 
 export default function HomePage() {
   const [loading, setLoading] = useState(true);

@@ -10,11 +10,13 @@ import { useState } from "react";
 import Cookies from "js-cookie";
 import Loader from "@/components/loader";
 import toast from "react-hot-toast";
+import { useTranslation } from "@/context/TranslationContext";
 
 export default function AuthLogin() {
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const { dictionary } = useTranslation();
 
     const handleLoginChange = (e) => {
         setLogin(e.target.value);
@@ -58,17 +60,17 @@ export default function AuthLogin() {
                 <IconSlogan />
             </div>
             <div className="flex flex-col gap-4 items-end pt-[72px] pb-[15px]">
-                <TextInput value={login} onChange={handleLoginChange} placeholder="Enter your username/email" />
-                <TextInput value={password} onChange={handlePasswordChange} show={true} placeholder="Enter your password" type="password" />
+                <TextInput value={login} onChange={handleLoginChange} placeholder={dictionary.enterUsernameMail} />
+                <TextInput value={password} onChange={handlePasswordChange} show={true} placeholder={dictionary.enterPassword} type="password" />
                 <Link className="text-end" href="/auth/login/forgetPassword/sendCode">
-                    <Text size="12px" weight="600" color="white">Forgot your password?</Text>
+                    <Text size="12px" weight="600" color="white">{dictionary.forgotPassword}</Text>
                 </Link>
             </div>
-            <Button text="Log in" type="secondary" width="343px" height="40px" onClick={handleLogin} />
+            <Button text={dictionary.login} type="secondary" width="343px" height="40px" onClick={handleLogin} />
             <div className="flex flex-row pt-[146px] gap-[5px]">
-                <Text weight="500" color="white">Don’t have an account ?</Text>
+                <Text weight="500" color="white">{dictionary.dontHaveAccount}</Text>
                 <Link href="/auth/register/credentials">
-                    <Text weight="700" color="white">Sign Up</Text>
+                    <Text weight="700" color="white">{dictionary.signup}</Text>
                 </Link>
             </div>
         </div>

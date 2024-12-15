@@ -10,6 +10,7 @@ import Link from "next/link";
 import Text from "@/components/text";
 import Loader from "@/components/loader";
 import toast from "react-hot-toast";
+import { useTranslation } from "@/context/TranslationContext";
 
 function AuthLoginValidate() {
     const [password, setPassword] = useState('');
@@ -17,6 +18,7 @@ function AuthLoginValidate() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [loading, setLoading] = useState(false);
+    const { dictionary } = useTranslation();
 
     const email = searchParams.get('email');
 
@@ -65,15 +67,15 @@ function AuthLoginValidate() {
     return (
         <div className="flex w-full h-[100vh] bg-primary items-center flex-col p-12">
             {loading && <Loader />}
-            <Header title="" left="Back" leftFunction={handleBack} buttonColor="white" />
+            <Header title="" left={dictionary.back} leftFunction={handleBack} buttonColor="white" />
             <div className="flex pt-10">
                 <IconSlogan />
             </div>
             <div className="flex flex-col gap-4 items-center pt-[72px] pb-[54px]">
-                <TextInput value={password} onChange={handlePassword} placeholder="Password" show={true} type="password" />
-                <TextInput value={confirmPassword} onChange={handleConfirmPassword} placeholder="Confirm password" show={true} type="password" />
+                <TextInput value={password} onChange={handlePassword} placeholder={dictionary.password} show={true} type="password" />
+                <TextInput value={confirmPassword} onChange={handleConfirmPassword} placeholder={dictionary.confirmPassword} show={true} type="password" />
             </div>
-            <Button text="Validate" type="secondary" width="343px" onClick={validate} />
+            <Button text={dictionary.validate} type="secondary" width="343px" onClick={validate} />
         </div>
     )
 }

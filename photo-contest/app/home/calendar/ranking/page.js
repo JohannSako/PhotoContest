@@ -7,10 +7,12 @@ import ScoreProfile from "@/components/content/scoreProfile";
 import Loader from "@/components/loader";
 import Header from "@/components/header";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "@/context/TranslationContext";
 
 function Ranking() {
     const searchParams = useSearchParams();
     const gameId = searchParams.get('_id');
+    const { dictionary } = useTranslation();
 
     const [participants, setParticipants] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -55,8 +57,8 @@ function Ranking() {
             {loading && <Loader />}
             <div className="flex items-center flex-col p-4 gap-[21px]">
                 <Header
-                    title="Ranking"
-                    left="Back"
+                    title={dictionary.ranking}
+                    left={dictionary.back}
                     leftFunction={() => router.back()}
                 />
                 <div className="grid gap-[16px] pt-[21px]">

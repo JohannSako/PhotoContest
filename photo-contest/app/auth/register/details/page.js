@@ -12,6 +12,7 @@ import Header from "@/components/header";
 import Upload from "@/components/photo/upload";
 import Loader from "@/components/loader";
 import toast from "react-hot-toast";
+import { useTranslation } from "@/context/TranslationContext";
 
 function AuthRegisterDetails() {
     const [username, setUsername] = useState('');
@@ -23,6 +24,8 @@ function AuthRegisterDetails() {
 
     const email = searchParams.get('email');
     const password = searchParams.get('password');
+
+    const { dictionary } = useTranslation();
 
     const handleUsernameChange = (e) => {
         setUsername(e.target.value);
@@ -65,15 +68,15 @@ function AuthRegisterDetails() {
     return (
         <div className="flex w-full h-[100vh] bg-primary items-center flex-col p-12">
             {loading && <Loader />}
-            <Header title="" left="Back" leftFunction={handleBack} buttonColor="white" />
+            <Header title="" left={dictionary.back} leftFunction={handleBack} buttonColor="white" />
             <div className="flex pt-10">
                 <IconSlogan />
             </div>
             <div className="flex flex-col items-center pt-[34px] pb-[14px] gap-10">
                 <Upload width="w-[158px]" height="h-[158px]" border="rounded-full" borderColor="border-white" onImageChange={handleProfilePictureChange} />
-                <TextInput value={username} onChange={handleUsernameChange} placeholder="Username" />
+                <TextInput value={username} onChange={handleUsernameChange} placeholder={dictionary.username} />
             </div>
-            <Button text="Sign Up" type="secondary" width="343px" onClick={handleRegister} />
+            <Button text={dictionary.signup} type="secondary" width="343px" onClick={handleRegister} />
         </div>
     )
 }

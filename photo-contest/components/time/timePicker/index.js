@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Text from '@/components/text';
+import { useTranslation } from '@/context/TranslationContext';
 
 export default function TimePicker({ cancelPicker, savePicker, time }) {
   const currentHour = Number(time.getHours().toLocaleString());
@@ -8,6 +9,8 @@ export default function TimePicker({ cancelPicker, savePicker, time }) {
   const [minutes, setMinutes] = useState(Number(time.getMinutes().toLocaleString()));
   const [seconds, setSeconds] = useState(0);
   const [meridiem, setMeridiem] = useState(currentHour < 12 ? "AM" : "PM");
+
+  const { dictionary } = useTranslation();
 
   const range = (start, end) => {
     let length = end - start + 1;
@@ -93,7 +96,7 @@ export default function TimePicker({ cancelPicker, savePicker, time }) {
       <div className="absolute w-[421px] h-[421px] bg-[#219B68] opacity-30 blur-[150px] bottom-[calc(-140px)] left-[calc(-215px)]"></div>
       <div className="w-[343px] h-[346px] bg-white flex flex-shrink-0 backdrop-blur-lg rounded-lg flex-col pt-2 pb-4 px-4 z-10">
         <div className="flex w-full py-3 text-start">
-          <Text color="#5DB075" size="20px" weight="600">Set time</Text>
+          <Text color="#5DB075" size="20px" weight="600">{dictionary.setTime}</Text>
         </div>
         <div className="relative flex w-full h-[168px] justify-center items-center gap-8 mt-[10px]">
           {renderColumn('hour', hoursRange, hours)}
@@ -105,10 +108,10 @@ export default function TimePicker({ cancelPicker, savePicker, time }) {
         </div>
         <div className="flex flex-row gap-4 mt-auto">
           <div className="w-[148px] h-14 flex flex-shrink-0 rounded-xl border-solid border-[1px] border-[#4E4E4E] active:opacity-50 items-center justify-center" onClick={cancelPicker}>
-            <Text color="#5DB075" weight="500">Cancel</Text>
+            <Text color="#5DB075" weight="500">{dictionary.cancel}</Text>
           </div>
           <div className="w-[148px] h-14 flex flex-shrink-0 bg-primary rounded-xl active:opacity-50 items-center justify-center" onClick={() => {savePicker(new Date(`1970-01-01T${(meridiem === 'PM' && hours !== 12 ? hours + 12 : meridiem === 'AM' && hours === 12 ? 0 : hours).toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`));}}>
-            <Text color="#FFFFFF" weight="500">Save</Text>
+            <Text color="#FFFFFF" weight="500">{dictionary.save}</Text>
           </div>
         </div>
       </div>

@@ -9,6 +9,7 @@ import Button from "@/components/input/button";
 import Cookies from "js-cookie";
 import PopUp from "@/components/popUp";
 import toast from "react-hot-toast";
+import { useTranslation } from "@/context/TranslationContext";
 
 function GameSettings() {
     const router = useRouter();
@@ -18,6 +19,8 @@ function GameSettings() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [deletePopUp, setDeletePopUp] = useState(false);
+
+    const { dictionary } = useTranslation();
 
     const _id = searchParams.get('_id');
 
@@ -106,37 +109,38 @@ function GameSettings() {
             {loading && <Loader />}
             <div className="flex items-center flex-col p-4 gap-[21px]">
                 <Header
-                    title="Game Settings"
-                    left="Back"
+                    title={dictionary.gameSettings}
+                    left={dictionary.back}
                     leftFunction={() => router.back()}
-                    right="Apply"
+                    right={dictionary.apply}
                     rightFunction={handleApply}
                 />
                 <TextInput
+                    placeholder={dictionary.enterText}
                     value={title}
                     onChange={handleTitleChange}
                 />
                 <div className="flex flex-col gap-4">
                     <Button
-                        text="Categories"
+                        text={dictionary.categories}
                         type="secondary"
                         width="343px"
                         onClick={() => router.push(`/game/settings/categories?_id=${_id}`)}
                     />
                     <Button
-                        text="Participants"
+                        text={dictionary.participants}
                         type="secondary"
                         width="343px"
                         onClick={() => router.push(`/game/settings/participants?_id=${_id}`)}
                     />
                     <Button
-                        text="Contest Time"
+                        text={dictionary.contestTime}
                         type="secondary"
                         width="343px"
                         onClick={() => router.push(`/game/settings/contestTime?_id=${_id}`)}
                     />
                     <Button
-                        text="Code"
+                        text={dictionary.code}
                         type="secondary"
                         width="343px"
                         onClick={() => toast.success("CODE: " + code)}
@@ -144,18 +148,18 @@ function GameSettings() {
                 </div>
             </div>
             <Button
-                text="Delete Game"
+                text={dictionary.deleteGame}
                 type="delete"
                 width="343px"
                 onClick={() => setDeletePopUp(true)}
             />
             {deletePopUp && <div className="absolute top-1/2 -translate-y-1/2">
                 <PopUp
-                    title="Deleting your game"
-                    content="Are you sure you want to delete this game? This action is permanent and cannot be undone. All associated photos, points, and game data will be permanently removed, and participants will lose access to this game."
-                    firstTextButton="Delete"
+                    title={dictionary.deletingGame}
+                    content={dictionary.deletingGameText}
+                    firstTextButton={dictionary.delete}
                     firstButton={deleteGame}
-                    secondTextButton="Cancel"
+                    secondTextButton={dictionary.cancel}
                     secondButton={() => setDeletePopUp(false)}
                     type="delete"
                 />

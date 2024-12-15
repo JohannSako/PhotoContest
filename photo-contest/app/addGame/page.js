@@ -9,6 +9,7 @@ import JoinGame from "./join";
 import Cookies from "js-cookie";
 import Loader from "@/components/loader";
 import toast from "react-hot-toast";
+import { useTranslation } from "@/context/TranslationContext";
 
 export default function AddGame() {
     const router = useRouter();
@@ -16,9 +17,14 @@ export default function AddGame() {
     const [categories, setCategories] = useState([]);
     const [title, setTitle] = useState('');
     const [loading, setLoading] = useState(false);
+    const {dictionary} = useTranslation();
 
     const handleCreate = async () => {
         try {
+            if (title.length === 0) {
+                toast.error(dictionary.titleCantEmpty);
+                return;
+            }
             setLoading(true);
             const response = await fetch('/api/game', {
                 method: 'POST',
@@ -49,16 +55,16 @@ export default function AddGame() {
         <div className="flex items-center flex-col p-4">
             {loading && <Loader />}
             <Header
-                title="Add Game"
-                left="Back"
+                title={dictionary.addGame}
+                left={dictionary.back}
                 leftFunction={() => router.back()}
-                right="Create"
+                right={dictionary.create}
                 rightFunction={handleCreate}
             />
             <div className="flex pt-10">
                 <SegmentedControl
-                    firstText="Create"
-                    secondText="Join"
+                    firstText={dictionary.create}
+                    secondText={dictionary.join}
                     index={index}
                     setIndex={setIndex}
                 />

@@ -10,6 +10,7 @@ import Link from "next/link";
 import Text from "@/components/text";
 import Loader from "@/components/loader";
 import toast from "react-hot-toast";
+import { useTranslation } from "@/context/TranslationContext";
 
 function AuthLoginVerify() {
     const searchParams = useSearchParams();
@@ -20,6 +21,8 @@ function AuthLoginVerify() {
     const [code, setCode] = useState('');
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+
+    const { dictionary } = useTranslation();
 
     const handleEmail = (e) => {
         setEmail(e.target.value)
@@ -88,20 +91,20 @@ function AuthLoginVerify() {
     return (
         <div className="flex w-full h-[100vh] bg-primary items-center flex-col p-12">
             {loading && <Loader />}
-            <Header title="" left="Back" leftFunction={handleBack} buttonColor="white" />
+            <Header title="" left={dictionary.back} leftFunction={handleBack} buttonColor="white" />
             <div className="flex pt-10">
                 <IconSlogan />
             </div>
             <div className="flex flex-col gap-4 items-center pt-[72px]">
-                <TextInput value={email} onChange={handleEmail} placeholder="Email" />
-                <TextInput value={code} onChange={handleCode} placeholder="Code" />
+                <TextInput value={email} onChange={handleEmail} placeholder={dictionary.email} />
+                <TextInput value={code} onChange={handleCode} placeholder={dictionary.code} />
             </div>
             <div className="flex w-full justify-end pb-[26px]">
                 <div className="text-end pt-[9px] active:opacity-50" onClick={resendCode}>
-                    <Text size="12px" weight="600" color="white">Resend code?</Text>
+                    <Text size="12px" weight="600" color="white">{dictionary.resendCode}</Text>
                 </div>
             </div>
-            <Button text="Verify" type="secondary" width="343px" onClick={verify} />
+            <Button text={dictionary.verify} type="secondary" width="343px" onClick={verify} />
         </div>
     )
 }

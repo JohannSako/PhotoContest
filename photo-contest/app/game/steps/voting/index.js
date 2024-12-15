@@ -11,6 +11,7 @@ import Carousel from "@/components/photo/carousel";
 import Like from "@/components/photo/like";
 import toast from "react-hot-toast";
 import Image from "next/image";
+import { useTranslation } from "@/context/TranslationContext";
 
 export default function GameVoting({ gamemaster, theme, photos, gameId }) {
     const router = useRouter();
@@ -20,6 +21,7 @@ export default function GameVoting({ gamemaster, theme, photos, gameId }) {
     const [like, setLike] = useState(false);
     const [likedPictureIndex, setLikedPictureIndex] = useState(-1);
     const [loading, setLoading] = useState(false);
+    const { dictionary } = useTranslation();
 
     useEffect(() => {
         const token = Cookies.get('token');
@@ -102,16 +104,16 @@ export default function GameVoting({ gamemaster, theme, photos, gameId }) {
             {loading && <Loader />}
             <div className="items-center gap-10 bg-primary w-full p-4 z-10">
                 <Header
-                    title="Game"
-                    left="Back"
+                    title={dictionary.game}
+                    left={dictionary.back}
                     leftFunction={() => router.back()}
-                    right={isGameMaster ? "Settings" : ""}
+                    right={isGameMaster ? dictionary.settings : ""}
                     rightFunction={isGameMaster ? (() => router.push(`/game/settings?_id=${gameId}`)) : undefined}
                     mainColor="white"
                     buttonColor="white"
                 />
                 <div className="flex flex-row w-full gap-8 justify-center pt-10">
-                    <Text color="white" size="14px" weight="900">NOW VOTING</Text>
+                    <Text color="white" size="14px" weight="900">{dictionary.nowVoting}</Text>
                     <div className="flex flex-row gap-1">
                         <Text color="white" size="14px" weight="500">Theme:</Text>
                         <div>
@@ -126,7 +128,7 @@ export default function GameVoting({ gamemaster, theme, photos, gameId }) {
             <div className="flex flex-col h-full text-end items-center justify-center gap-4 z-10">
                 {photos.length > 0 ? <Carousel photos={photos} setIndex={setIndex} /> : (
                     <div className="flex text-center">
-                        <Text color="white">Well looks like no one felt like posting pictures today.. See you tomorrow :)</Text>
+                        <Text color="white">{dictionary.noOnePosted}</Text>
                     </div>
                 )}
                 {photos.length > 0 && <div className="flex">

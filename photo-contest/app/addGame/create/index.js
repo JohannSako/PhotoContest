@@ -3,12 +3,14 @@ import Category from "@/components/category";
 import TextInput from '@/components/input/text';
 import Loader from '@/components/loader';
 import toast from "react-hot-toast";
+import { useTranslation } from '@/context/TranslationContext';
 
 export default function CreateGame({ title, setTitle, setActiveCategories }) {
     const [categories, setCategories] = useState([]);
     const [filteredCategories, setFilteredCategories] = useState([]);
     const [stateCategories, setStateCategories] = useState({});
     const [loading, setLoading] = useState(false);
+    const { dictionary } = useTranslation();
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -58,7 +60,7 @@ export default function CreateGame({ title, setTitle, setActiveCategories }) {
     return (
         <div className="pt-[21px]">
             {loading && <Loader />}
-            <TextInput placeholder="Enter Title" value={title} onChange={handleTitle} />
+            <TextInput placeholder={dictionary.enterTitle} value={title} onChange={handleTitle} />
             <div className="grid grid-cols-2 gap-[29px] pt-[21px]">
                 {filteredCategories.map((category) => (
                     <Category
