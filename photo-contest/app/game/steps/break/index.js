@@ -15,7 +15,7 @@ export default function GameBreak({ photos, theme, gamemaster, gameId }) {
     const router = useRouter();
     const [isGameMaster, setIsGameMaster] = useState(false);
     const [winners, setWinners] = useState([]);
-    const { dictionary } = useTranslation();
+    const { dictionary, locale } = useTranslation();
     const [index, setIndex] = useState(0);
 
     useEffect(() => {
@@ -61,7 +61,7 @@ export default function GameBreak({ photos, theme, gamemaster, gameId }) {
                         <div className="flex flex-row gap-1">
                             <Text color="#5DB075" size="14px" weight="500">Theme:</Text>
                             <div>
-                                <Text color="#5DB075" size="14px" weight="700">{theme.title.toUpperCase()}</Text>
+                                <Text color="#5DB075" size="14px" weight="700">{locale === 'fr' ? dictionary[theme.title].toUpperCase() : theme.title.toUpperCase()}</Text>
                             </div>
                         </div>
                     </div>

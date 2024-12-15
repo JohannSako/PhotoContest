@@ -5,13 +5,14 @@ import ThemeAnnouncement from "@/components/theme";
 import { useEffect } from "react";
 import anime from "animejs";
 import { useTranslation } from "@/context/TranslationContext";
+import toast from "react-hot-toast";
 
 export default function GameTheme({ theme, category, handleLeaveTheme }) {
-    const { dictionary } = useTranslation();
+    const { dictionary, locale } = useTranslation();
 
     useEffect(() => {
         const firstLoader = anime.timeline({
-            complete: () => {}
+            complete: () => { }
         });
         firstLoader.add({
             targets: "#text",
@@ -36,7 +37,7 @@ export default function GameTheme({ theme, category, handleLeaveTheme }) {
             </div>
             <div id="theme" className="flex w-full items-end justify-center">
                 <div className="animate-big-bounce">
-                    <ThemeAnnouncement theme={theme.title} icon={category.icon} />
+                    <ThemeAnnouncement theme={locale === 'fr' ? dictionary[theme.title] : theme.title} icon={category.icon} />
                 </div>
             </div>
         </div>
