@@ -20,7 +20,7 @@ export default function ThemeAnnouncement({ theme, icon }) {
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
     >
-      <div className="flex flex-col items-center justify-center w-full h-full gap-2">
+      <div className="flex flex-col items-center justify-center text-center w-full h-full gap-2">
         <Image
           src={`/assets/icons/categories/${icon}.svg`}
           alt={icon}
