@@ -1468,5 +1468,20 @@
     "conferences": "conférences",
     "metal": "métal",
     "quad": "quad",
-    "universities": "universités"
+    "universities": "universités",
+    "installApp": "Installez notre application sur votre téléphone",
+    "close": "Fermer",
+    "android_title": "Comment ajouter notre application à votre écran d'accueil sur Android",
+    "android_0": "Aller sur PhotoContest dans l'Application Google Chrome",
+    "android_1": "Appuyez sur l'icône du menu (trois points) dans le coin supérieur droit",
+    "android_2": "Sélectionnez « Ajouter à l'écran d'accueil » dans le menu déroulant",
+    "android_3": "Appuyez sur installer",
+    "android_4": "Appuyez de nouveau sur installer",
+    "android_5": "Lancez l'App !",
+    "ios_title": "Comment ajouter notre application à votre écran d'accueil sur iOS",
+    "ios_0": "Aller sur PhotoContest dans l'Application Safari",
+    "ios_1": "Appuyez sur l'icône de partage en bas de l'écran",
+    "ios_2": "Faites défiler vers le bas et sélectionnez « Ajouter à l'écran d'accueil »",
+    "ios_3": "Appuyez sur « Ajouter »",
+    "ios_4": "Lancez l'App !"
 }

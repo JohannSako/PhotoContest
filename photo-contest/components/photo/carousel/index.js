@@ -4,7 +4,7 @@ import 'swiper/css';
 import Text from '@/components/text';
 import Image from 'next/image';
 
-export default function Carousel({ photos, setIndex }) {
+export default function Carousel({ photos, setIndex, onlyURL = false }) {
   const handleSlideChange = (swiper) => {
     setIndex(swiper.activeIndex);
   };
@@ -31,9 +31,9 @@ export default function Carousel({ photos, setIndex }) {
           >
             <div className="w-full h-full overflow-hidden rounded-md">
               <img
-                src={photo.photo}
-                alt={`Photo by ${photo.user.name}`}
-                className="w-full h-full object-cover"
+                src={onlyURL ? photo : photo.photo}
+                alt={`Photo by ${onlyURL ? 'Unknown' : photo.user.name}`}
+                className={onlyURL ? "w-full h-full" : "w-full h-full object-cover"}
               />
             </div>
           </SwiperSlide>

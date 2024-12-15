@@ -98,5 +98,20 @@
     "contestVotingEnded": "Contest Voting Ended",
     "contestVotingEndedText": "The contest voting period has ended. Please check the results.",
     "noOnePosted": "Well looks like no one felt like posting pictures today.. See you tomorrow :)",
-    "deleteGame": "Delete Game"
+    "deleteGame": "Delete Game",
+    "installApp": "Install Our App on Your Phone",
+    "close": "Close",
+    "android_title": "How to Add Our App to Your Home Screen on Android",
+    "android_0": "Go to PhotoContest on Google Chrome App",
+    "android_1": "Tap the menu icon (three dots) in the top-right corner",
+    "android_2": "Select 'Add to Home screen' from the dropdown menu",
+    "android_3": "Press install",
+    "android_4": "Press install again",
+    "android_5": "Start the App !",
+    "ios_title": "How to Add Our App to Your Home Screen on iOS",
+    "ios_0": "Go to PhotoContest on Safari App",
+    "ios_1": "Tap the share icon at the bottom of the screen",
+    "ios_2": "Scroll down and select 'Add to Home Screen'",
+    "ios_3": "Press 'Add'",
+    "ios_4": "Start the App !"
 }
