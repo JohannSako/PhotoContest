@@ -27,55 +27,59 @@ async function updateContestState() {
     const games = await gameCollection.find().toArray();
 
     for (const game of games) {
-        const contest = await contestCollection.findOne({ _id: new ObjectId(game.contest) });
+        try {
+            const contest = await contestCollection.findOne({ _id: new ObjectId(game.contest) });
 
-        if (!contest) continue;
+            if (!contest) continue;
 
-        const endUploadTime = normalizeToTime(game.endUpload);
-        const endVoteTime = normalizeToTime(game.endVote);
-        const startUploadTime = normalizeToTime(game.startUpload);
+            const endUploadTime = normalizeToTime(game.endUpload);
+            const endVoteTime = normalizeToTime(game.endVote);
+            const startUploadTime = normalizeToTime(game.startUpload);
 
-        const contestCreationTime = normalizeToTime(contest.date);
+            const contestCreationTime = normalizeToTime(contest.date);
 
-        const headersList = headers();
-        const defaultLocale = headersList.get("accept-language");
-        const locale = cookies().get("NEXT_LOCALE")?.value || defaultLocale || "en";
-        const isFrench = locale.includes('fr');
+            const headersList = headers();
+            const defaultLocale = headersList.get("accept-language");
+            const locale = cookies().get("NEXT_LOCALE")?.value || defaultLocale || "en";
+            const isFrench = locale.includes('fr');
 
-        if (contest.state === 'UPLOADING' && now >= endUploadTime && (contestCreationTime < endUploadTime || isNowNextDay(contest.date))) {
-            await contestCollection.updateOne(
-                { _id: contest._id },
-                { $set: { state: 'VOTING' } }
-            );
+            if (contest.state === 'UPLOADING' && now >= endUploadTime && (contestCreationTime < endUploadTime || isNowNextDay(contest.date))) {
+                await contestCollection.updateOne(
+                    { _id: contest._id },
+                    { $set: { state: 'VOTING' } }
+                );
 
-            await contactParticipants(game.participants.concat(game.gamemaster), {
-                title: `${game.title}: ` + (isFrench ?
-                    "Vote du concours commencé" :
-                    "Contest Voting Started"),
-                content: isFrench ?
-                    `La période de vote du concours a commencé. Veuillez voter pour vos photos préférées.` :
-                    `The contest voting period has started. Please vote for your favorite photos.`
-            }, isFrench ? 'fr' : 'en');
-        } else if (contest.state === 'VOTING' && ((game.whenPlayersVoted && await allParticipantsVoted(game)) || (!game.whenPlayersVoted && now >= endVoteTime))) {
-            await contestCollection.updateOne(
-                { _id: contest._id },
-                { $set: { state: 'BREAK' } }
-            );
+                await contactParticipants(game.participants.concat(game.gamemaster), {
+                    title: `${game.title}: ` + (isFrench ?
+                        "Vote du concours commencé" :
+                        "Contest Voting Started"),
+                    content: isFrench ?
+                        `La période de vote du concours a commencé. Veuillez voter pour vos photos préférées.` :
+                        `The contest voting period has started. Please vote for your favorite photos.`
+                }, isFrench ? 'fr' : 'en');
+            } else if (contest.state === 'VOTING' && ((game.whenPlayersVoted && await allParticipantsVoted(game)) || (!game.whenPlayersVoted && now >= endVoteTime))) {
+                await contestCollection.updateOne(
+                    { _id: contest._id },
+                    { $set: { state: 'BREAK' } }
+                );
 
-            await contactParticipants(game.participants.concat(game.gamemaster), {
-                title: `${game.title}: ` + (isFrench ?
-                    "Vote du concours terminé" :
-                    "Contest Voting Ended"),
-                content: isFrench ?
-                    `La période de vote du concours est terminée. Veuillez vérifier les résultats.` :
-                    `The contest voting period has ended. Please check the results.`
-            }, isFrench ? 'fr' : 'en');
-        } else if (contest.state === 'BREAK' && now >= startUploadTime && now <= endUploadTime) {
-            const newContestId = await createNewContest(game, db);
-            await gameCollection.updateOne(
-                { _id: game._id },
-                { $set: { contest: newContestId }, $push: { history: contest._id } }
-            );
+                await contactParticipants(game.participants.concat(game.gamemaster), {
+                    title: `${game.title}: ` + (isFrench ?
+                        "Vote du concours terminé" :
+                        "Contest Voting Ended"),
+                    content: isFrench ?
+                        `La période de vote du concours est terminée. Veuillez vérifier les résultats.` :
+                        `The contest voting period has ended. Please check the results.`
+                }, isFrench ? 'fr' : 'en');
+            } else if (contest.state === 'BREAK' && now >= startUploadTime && now <= endUploadTime) {
+                const newContestId = await createNewContest(game, db);
+                await gameCollection.updateOne(
+                    { _id: game._id },
+                    { $set: { contest: newContestId }, $push: { history: contest._id } }
+                );
+            }
+        } catch (err) {
+            console.error('Error executing cron job:', err.message);
         }
     }
 }
