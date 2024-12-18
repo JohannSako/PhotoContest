@@ -20,9 +20,31 @@ function ContestHistory() {
     const [photos, setPhotos] = useState([]);
     const [index, setIndex] = useState(0);
     const [loading, setLoading] = useState(false);
+    const [winnerIndex, setWinnerIndex] = useState([]);
     const router = useRouter();
 
     const {dictionary, locale} = useTranslation();
+
+    useEffect(() => {
+        const setWinners = () => {
+            let highestValue = -1;
+            let winners = [];
+    
+            for (let it = 0; it < photos.length; it++) {
+                if (photos[it].votes.length > highestValue) {
+                    highestValue = photos[it].votes.length;
+                    winners = [it];
+                } else if (photos[it].votes.length === highestValue) {
+                    winners.push(it);
+                }
+            }
+            setWinnerIndex(winners);
+        };
+    
+        if (photos.length > 0) {
+            setWinners();
+        }
+    }, [photos]);    
 
     useEffect(() => {
         async function fetchContest() {
@@ -79,7 +101,7 @@ function ContestHistory() {
                         {!loading && <Text color="white">Well looks like no one felt like posting pictures this day..</Text>}
                     </div>
                 )}
-                {photos.length > 0 && <Text color="white">{photos[index].user.name}</Text>}
+                {photos.length > 0 && <Text color="white">{photos[index].user.name}{winnerIndex.length > 0 && winnerIndex.includes(index) && " 👑"}</Text>}
             </div>
         </div>
     );

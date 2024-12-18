@@ -104,6 +104,31 @@ function GameSettings() {
         }
     }
 
+    const showCode = async () => {
+        if (!code) {
+            toast.error("No code to copy");
+            return;
+        }
+
+        try {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(code);
+                toast.success(`CODE COPIED: ${code}`);
+            } else {
+                const textArea = document.createElement("textarea");
+                textArea.value = code;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand("copy");
+                document.body.removeChild(textArea);
+                toast.success(`CODE COPIED: ${code}`);
+            }
+        } catch (err) {
+            toast.error("Failed to copy code");
+            console.error("Clipboard write failed:", err);
+        }
+    };
+
     return (
         <div className="flex h-[100vh] items-center flex-col p-4 justify-between">
             {loading && <Loader />}
@@ -143,7 +168,7 @@ function GameSettings() {
                         text={dictionary.code}
                         type="secondary"
                         width="343px"
-                        onClick={() => toast.success("CODE: " + code)}
+                        onClick={showCode}
                     />
                 </div>
             </div>

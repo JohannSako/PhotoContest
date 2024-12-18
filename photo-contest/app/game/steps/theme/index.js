@@ -28,6 +28,7 @@ export default function GameTheme({ theme, category, handleLeaveTheme }) {
             duration: 2000,
             delay: (el, i) => 30 * i,
         });
+        setTimeout(handleLeaveTheme, 8000);
     }, []);
 
     return (
