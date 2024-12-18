@@ -1,4 +1,3 @@
-// lib/mongodb.js
 import { MongoClient } from 'mongodb';
 
 const uri = process.env.MONGODB_URI;
@@ -14,15 +13,17 @@ if (!process.env.MONGODB_URI) {
   throw new Error('Please add your MongoDB URI to .env.local');
 }
 
-if (process.env.NODE_ENV === 'development') {
-  if (!global._mongoClientPromise) {
-    client = new MongoClient(uri, options);
-    global._mongoClientPromise = client.connect();
-  }
-  clientPromise = global._mongoClientPromise;
-} else {
+if (!global._mongoClient) {
   client = new MongoClient(uri, options);
-  clientPromise = client.connect();
+  global._mongoClient = client;
+} else {
+  client = global._mongoClient;
 }
+
+if (!global._mongoClientPromise) {
+  global._mongoClientPromise = client.connect();
+}
+
+clientPromise = global._mongoClientPromise;
 
 export default clientPromise;
