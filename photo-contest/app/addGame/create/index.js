@@ -65,7 +65,7 @@ export default function CreateGame({ title, setTitle, setActiveCategories }) {
                 {filteredCategories.map((category) => (
                     <Category
                         key={category._id}
-                        text={category.title}
+                        text={dictionary[category.title]}
                         icon={category.icon}
                         state={stateCategories[category._id]}
                         setState={() => toggleCategoryState(category._id)}

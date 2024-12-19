@@ -134,7 +134,7 @@ function GameSettingsCategories() {
                     {filteredCategories.map((category) => (
                         <Category
                             key={category._id}
-                            text={category.title}
+                            text={dictionary[category.title]}
                             icon={category.icon}
                             state={selectedCategories.includes(category._id)}
                             setState={() => toggleCategoryState(category._id)}
