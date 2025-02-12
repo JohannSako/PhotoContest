@@ -12,12 +12,13 @@ export async function getRandomTheme(categories, history, db) {
     const contestCollection = db.collection('contest');
 
     // Fetch the last contests from history
-    const lastContests = await contestCollection.find({ _id: { $in: history.slice(-6).map(id => new ObjectId(id)) } }).toArray();
-    const lastCategories = lastContests.map(contest => contest.categoryId);
+    const skippingHistoryNb = history.length >= categories.length ? categories.length : 0;
+    const lastContests = await contestCollection.find({ _id: { $in: history.slice(-skippingHistoryNb).map(id => new ObjectId(id)) } }).toArray();
+    const lastCategoriesToExclude = [];
+    for (const contest of lastContests)
+        lastCategoriesToExclude.push(contest.category.toString());
 
-    // Determine the number of categories to exclude based on the available categories
-    const numCategoriesToExclude = Math.min(6, categories.length - 1);
-    let availableCategories = categories.filter(category => !lastCategories.slice(-numCategoriesToExclude).includes(category));
+    let availableCategories = categories.filter(category => lastCategoriesToExclude.indexOf(new ObjectId(category.id).toString()) == -1);
 
     // If all categories are filtered out, reset available categories
     if (availableCategories.length === 0) {
