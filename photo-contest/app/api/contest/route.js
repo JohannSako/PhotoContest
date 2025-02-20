@@ -100,9 +100,10 @@ export async function POST(request) {
     try {
         const body = await request.json();
 
-        const headersList = headers();
+        const headersList = await headers();
         const defaultLocale = headersList.get("accept-language");
-        const locale = cookies().get("NEXT_LOCALE")?.value || defaultLocale || "en";
+        const cookies = await cookies();
+        const locale = cookies.get("NEXT_LOCALE")?.value || defaultLocale || "en";
 
         if (!Array.isArray(body.categories) || !Array.isArray(body.history) || !Array.isArray(body.participants) || body.title == undefined) {
             return new Response(JSON.stringify({ error: 'Invalid input data' }), {

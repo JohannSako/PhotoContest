@@ -38,9 +38,10 @@ async function updateContestState() {
 
             const contestCreationTime = normalizeToTime(contest.date);
 
-            const headersList = headers();
+            const headersList = await headers();
             const defaultLocale = headersList.get("accept-language");
-            const locale = cookies().get("NEXT_LOCALE")?.value || defaultLocale || "en";
+            const cookiesPromise = await cookies();
+            const locale = cookiesPromise.get("NEXT_LOCALE")?.value || defaultLocale || "en";
             const isFrench = locale.includes('fr');
 
             if (contest.state === 'UPLOADING' && now >= endUploadTime && (contestCreationTime < endUploadTime || isNowNextDay(contest.date))) {
@@ -107,9 +108,10 @@ async function createNewContest(game, db) {
     const categories = game.categories;
     const history = game.history;
 
-    const headersList = headers();
+    const headersList = await headers();
     const defaultLocale = headersList.get("accept-language");
-    const locale = cookies().get("NEXT_LOCALE")?.value || defaultLocale || "en";
+    const cookiesPromise = await cookies();
+    const locale = cookiesPromise.get("NEXT_LOCALE")?.value || defaultLocale || "en";
     const isFrench = locale.includes('fr');
 
     const { theme, categoryId } = await getRandomTheme(categories, history, db);

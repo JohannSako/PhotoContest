@@ -4,7 +4,7 @@ import { ObjectId } from 'mongodb';
 
 export async function DELETE(request, { params }) {
     try {
-        const { id } = params;
+        const { id } = await params;
         const authHeader = request.headers.get('authorization');
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
             return new Response(JSON.stringify({ error: 'Unauthorized' }), {

@@ -9,10 +9,11 @@ export const metadata = {
   description: 'Snap, Share, Succeed'
 };
 
-export default function RootLayout({ children }) {
-  const headersList = headers();
+export default async function RootLayout({ children }) {
+  const headersList = await headers();
   const defaultLocale = headersList.get("accept-language");
-  const locale = cookies().get("NEXT_LOCALE")?.value || defaultLocale || "en";
+  const cookiesPromise = await cookies();
+  const locale = cookiesPromise.get("NEXT_LOCALE")?.value || defaultLocale || "en";
 
   return (
     <html lang="en">

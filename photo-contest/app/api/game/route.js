@@ -20,9 +20,10 @@ async function createContest(game, db) {
   const categories = game.categories;
   const history = game.history;
 
-  const headersList = headers();
+  const headersList = await headers();
   const defaultLocale = headersList.get("accept-language");
-  const locale = cookies().get("NEXT_LOCALE")?.value || defaultLocale || "en";
+  const cookiesPromise = await cookies();
+  const locale = await cookiesPromise.get("NEXT_LOCALE")?.value || defaultLocale || "en";
 
   console.log(locale);
 

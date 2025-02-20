@@ -3,7 +3,7 @@ import { ObjectId } from 'mongodb';
 
 export async function GET(request, { params }) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     if (!ObjectId.isValid(id)) {
       return new Response('Invalid photo ID', {

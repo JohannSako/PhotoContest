@@ -99,11 +99,12 @@ function HomeCalendar() {
                 leftFunction={() => router.back()}
                 rightFunction={() => router.push(`/home/calendar/ranking?_id=${_id}`)}
             />
-            {sortedKeys.map(key => {
+            {sortedKeys.map((key, idx) => {
                 const [year, month] = key.split('-').map(Number);
                 const monthContests = contestsByMonthYear[key];
+
                 return (
-                    <div key={key} className="mb-8">
+                    <div key={key + idx} className="mb-8">
                         <Month monthNb={month} year={year} contests={monthContests} handleClick={navigateToContest} />
                     </div>
                 );

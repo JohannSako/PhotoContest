@@ -5,7 +5,7 @@ import { jwtVerify } from 'jose';
 
 export async function PUT(request, { params }) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
 
     if (!body.title || typeof body.title !== 'string') {

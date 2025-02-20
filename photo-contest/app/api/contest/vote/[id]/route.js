@@ -23,7 +23,7 @@ async function authenticateToken(request) {
 
 export async function POST(request, { params }) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const userId = await authenticateToken(request);
 
     const client = await clientPromise;

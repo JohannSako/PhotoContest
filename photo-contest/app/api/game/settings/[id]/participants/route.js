@@ -6,7 +6,7 @@ import { decrypt } from '@/lib/crypto';
 
 export async function PUT(request, { params }) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
 
     if (!Array.isArray(body.participants)) {
@@ -76,7 +76,7 @@ export async function PUT(request, { params }) {
 
 export async function GET(request, { params }) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     const client = await clientPromise;
     const db = client.db('main');
