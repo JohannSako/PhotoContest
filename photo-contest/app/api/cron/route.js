@@ -93,6 +93,8 @@ async function allParticipantsVoted(game) {
     const photoCollection = db.collection('photo');
     const photos = await photoCollection.find({ contest_id: contest._id }).toArray();
 
+    if (photos.length === 0)
+        return true;
     const votedUserIds = photos.reduce((voters, photo) => {
         photo.votes.forEach(vote => voters.add(vote.toString()));
         return voters;
